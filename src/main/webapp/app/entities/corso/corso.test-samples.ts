@@ -1,18 +1,18 @@
 import { ICorso, NewCorso } from './corso.model';
 
 export const sampleWithRequiredData: ICorso = {
-  id: 30269,
+  id: 12612,
 };
 
 export const sampleWithPartialData: ICorso = {
-  id: 6493,
-  anno: 9985,
+  id: 10041,
+  nome: 'fax smite',
 };
 
 export const sampleWithFullData: ICorso = {
-  id: 28775,
-  anno: 13786,
-  nome: 'how magnificent of',
+  id: 5832,
+  anno: 9288,
+  nome: 'centre amidst',
 };
 
 export const sampleWithNewData: NewCorso = {

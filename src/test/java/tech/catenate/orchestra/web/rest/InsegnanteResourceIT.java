@@ -263,7 +263,7 @@ class InsegnanteResourceIT {
         Insegnante partialUpdatedInsegnante = new Insegnante();
         partialUpdatedInsegnante.setId(insegnante.getId());
 
-        partialUpdatedInsegnante.cognome(UPDATED_COGNOME);
+        partialUpdatedInsegnante.nome(UPDATED_NOME).cognome(UPDATED_COGNOME);
 
         restInsegnanteMockMvc
             .perform(

@@ -1,18 +1,18 @@
 import { IInsegnante, NewInsegnante } from './insegnante.model';
 
 export const sampleWithRequiredData: IInsegnante = {
-  id: 20345,
+  id: 456,
 };
 
 export const sampleWithPartialData: IInsegnante = {
-  id: 2463,
-  cognome: 'absolve afore yippee',
+  id: 22946,
+  cognome: 'warmly bright',
 };
 
 export const sampleWithFullData: IInsegnante = {
-  id: 6520,
-  nome: 'marvelous neuropathologist',
-  cognome: 'unless upset',
+  id: 14364,
+  nome: 'by bah',
+  cognome: 'hence',
 };
 
 export const sampleWithNewData: NewInsegnante = {
