@@ -1,0 +1,23 @@
+{
+  "annotations": {
+    "changelogDate": "20240702155739"
+  },
+  "dto": "no",
+  "fields": [
+    {
+      "fieldName": "anno",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "nome",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "Corso",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}
