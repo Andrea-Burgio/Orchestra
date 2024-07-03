@@ -261,7 +261,7 @@ class CorsoResourceIT {
         Corso partialUpdatedCorso = new Corso();
         partialUpdatedCorso.setId(corso.getId());
 
-        partialUpdatedCorso.anno(UPDATED_ANNO).nome(UPDATED_NOME);
+        partialUpdatedCorso.anno(UPDATED_ANNO);
 
         restCorsoMockMvc
             .perform(

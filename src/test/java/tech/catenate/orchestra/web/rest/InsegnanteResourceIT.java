@@ -263,8 +263,6 @@ class InsegnanteResourceIT {
         Insegnante partialUpdatedInsegnante = new Insegnante();
         partialUpdatedInsegnante.setId(insegnante.getId());
 
-        partialUpdatedInsegnante.nome(UPDATED_NOME).cognome(UPDATED_COGNOME);
-
         restInsegnanteMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedInsegnante.getId())

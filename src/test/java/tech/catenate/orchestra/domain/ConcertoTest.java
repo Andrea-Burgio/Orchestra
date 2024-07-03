@@ -1,0 +1,24 @@
+package tech.catenate.orchestra.domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static tech.catenate.orchestra.domain.ConcertoTestSamples.*;
+
+import org.junit.jupiter.api.Test;
+import tech.catenate.orchestra.web.rest.TestUtil;
+
+class ConcertoTest {
+
+    @Test
+    void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Concerto.class);
+        Concerto concerto1 = getConcertoSample1();
+        Concerto concerto2 = new Concerto();
+        assertThat(concerto1).isNotEqualTo(concerto2);
+
+        concerto2.setId(concerto1.getId());
+        assertThat(concerto1).isEqualTo(concerto2);
+
+        concerto2 = getConcertoSample2();
+        assertThat(concerto1).isNotEqualTo(concerto2);
+    }
+}
