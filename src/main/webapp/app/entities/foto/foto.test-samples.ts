@@ -1,18 +1,18 @@
 import { IFoto, NewFoto } from './foto.model';
 
 export const sampleWithRequiredData: IFoto = {
-  id: 20525,
+  id: 27757,
 };
 
 export const sampleWithPartialData: IFoto = {
-  id: 10332,
+  id: 16176,
 };
 
 export const sampleWithFullData: IFoto = {
-  id: 13248,
+  id: 26492,
   blob: '../fake-data/blob/hipster.png',
   blobContentType: 'unknown',
-  nome_file: 'stage speedy',
+  nome_file: 'naturally gee',
 };
 
 export const sampleWithNewData: NewFoto = {

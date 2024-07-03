@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static tech.catenate.orchestra.domain.FotoAsserts.*;
+import static tech.catenate.orchestra.domain.FilmatoAsserts.*;
 import static tech.catenate.orchestra.web.rest.TestUtil.createUpdateProxyForBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,16 +22,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import tech.catenate.orchestra.IntegrationTest;
-import tech.catenate.orchestra.domain.Foto;
-import tech.catenate.orchestra.repository.FotoRepository;
+import tech.catenate.orchestra.domain.Filmato;
+import tech.catenate.orchestra.repository.FilmatoRepository;
 
 /**
- * Integration tests for the {@link FotoResource} REST controller.
+ * Integration tests for the {@link FilmatoResource} REST controller.
  */
 @IntegrationTest
 @AutoConfigureMockMvc
 @WithMockUser
-class FotoResourceIT {
+class FilmatoResourceIT {
 
     private static final byte[] DEFAULT_BLOB = TestUtil.createByteArray(1, "0");
     private static final byte[] UPDATED_BLOB = TestUtil.createByteArray(1, "1");
@@ -41,7 +41,7 @@ class FotoResourceIT {
     private static final String DEFAULT_NOME_FILE = "AAAAAAAAAA";
     private static final String UPDATED_NOME_FILE = "BBBBBBBBBB";
 
-    private static final String ENTITY_API_URL = "/api/fotos";
+    private static final String ENTITY_API_URL = "/api/filmatoes";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
     private static Random random = new Random();
@@ -51,17 +51,17 @@ class FotoResourceIT {
     private ObjectMapper om;
 
     @Autowired
-    private FotoRepository fotoRepository;
+    private FilmatoRepository filmatoRepository;
 
     @Autowired
     private EntityManager em;
 
     @Autowired
-    private MockMvc restFotoMockMvc;
+    private MockMvc restFilmatoMockMvc;
 
-    private Foto foto;
+    private Filmato filmato;
 
-    private Foto insertedFoto;
+    private Filmato insertedFilmato;
 
     /**
      * Create an entity for this test.
@@ -69,9 +69,9 @@ class FotoResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Foto createEntity(EntityManager em) {
-        Foto foto = new Foto().blob(DEFAULT_BLOB).blobContentType(DEFAULT_BLOB_CONTENT_TYPE).nome_file(DEFAULT_NOME_FILE);
-        return foto;
+    public static Filmato createEntity(EntityManager em) {
+        Filmato filmato = new Filmato().blob(DEFAULT_BLOB).blobContentType(DEFAULT_BLOB_CONTENT_TYPE).nome_file(DEFAULT_NOME_FILE);
+        return filmato;
     }
 
     /**
@@ -80,75 +80,75 @@ class FotoResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Foto createUpdatedEntity(EntityManager em) {
-        Foto foto = new Foto().blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
-        return foto;
+    public static Filmato createUpdatedEntity(EntityManager em) {
+        Filmato filmato = new Filmato().blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
+        return filmato;
     }
 
     @BeforeEach
     public void initTest() {
-        foto = createEntity(em);
+        filmato = createEntity(em);
     }
 
     @AfterEach
     public void cleanup() {
-        if (insertedFoto != null) {
-            fotoRepository.delete(insertedFoto);
-            insertedFoto = null;
+        if (insertedFilmato != null) {
+            filmatoRepository.delete(insertedFilmato);
+            insertedFilmato = null;
         }
     }
 
     @Test
     @Transactional
-    void createFoto() throws Exception {
+    void createFilmato() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
-        // Create the Foto
-        var returnedFoto = om.readValue(
-            restFotoMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(foto)))
+        // Create the Filmato
+        var returnedFilmato = om.readValue(
+            restFilmatoMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(filmato)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            Foto.class
+            Filmato.class
         );
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
-        assertFotoUpdatableFieldsEquals(returnedFoto, getPersistedFoto(returnedFoto));
+        assertFilmatoUpdatableFieldsEquals(returnedFilmato, getPersistedFilmato(returnedFilmato));
 
-        insertedFoto = returnedFoto;
+        insertedFilmato = returnedFilmato;
     }
 
     @Test
     @Transactional
-    void createFotoWithExistingId() throws Exception {
-        // Create the Foto with an existing ID
-        foto.setId(1L);
+    void createFilmatoWithExistingId() throws Exception {
+        // Create the Filmato with an existing ID
+        filmato.setId(1L);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restFotoMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(foto)))
+        restFilmatoMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(filmato)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
-    void getAllFotos() throws Exception {
+    void getAllFilmatoes() throws Exception {
         // Initialize the database
-        insertedFoto = fotoRepository.saveAndFlush(foto);
+        insertedFilmato = filmatoRepository.saveAndFlush(filmato);
 
-        // Get all the fotoList
-        restFotoMockMvc
+        // Get all the filmatoList
+        restFilmatoMockMvc
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(foto.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(filmato.getId().intValue())))
             .andExpect(jsonPath("$.[*].blobContentType").value(hasItem(DEFAULT_BLOB_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].blob").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_BLOB))))
             .andExpect(jsonPath("$.[*].nome_file").value(hasItem(DEFAULT_NOME_FILE)));
@@ -156,16 +156,16 @@ class FotoResourceIT {
 
     @Test
     @Transactional
-    void getFoto() throws Exception {
+    void getFilmato() throws Exception {
         // Initialize the database
-        insertedFoto = fotoRepository.saveAndFlush(foto);
+        insertedFilmato = filmatoRepository.saveAndFlush(filmato);
 
-        // Get the foto
-        restFotoMockMvc
-            .perform(get(ENTITY_API_URL_ID, foto.getId()))
+        // Get the filmato
+        restFilmatoMockMvc
+            .perform(get(ENTITY_API_URL_ID, filmato.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(foto.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(filmato.getId().intValue()))
             .andExpect(jsonPath("$.blobContentType").value(DEFAULT_BLOB_CONTENT_TYPE))
             .andExpect(jsonPath("$.blob").value(Base64.getEncoder().encodeToString(DEFAULT_BLOB)))
             .andExpect(jsonPath("$.nome_file").value(DEFAULT_NOME_FILE));
@@ -173,203 +173,205 @@ class FotoResourceIT {
 
     @Test
     @Transactional
-    void getNonExistingFoto() throws Exception {
-        // Get the foto
-        restFotoMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
+    void getNonExistingFilmato() throws Exception {
+        // Get the filmato
+        restFilmatoMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
     }
 
     @Test
     @Transactional
-    void putExistingFoto() throws Exception {
+    void putExistingFilmato() throws Exception {
         // Initialize the database
-        insertedFoto = fotoRepository.saveAndFlush(foto);
+        insertedFilmato = filmatoRepository.saveAndFlush(filmato);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
-        // Update the foto
-        Foto updatedFoto = fotoRepository.findById(foto.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedFoto are not directly saved in db
-        em.detach(updatedFoto);
-        updatedFoto.blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
+        // Update the filmato
+        Filmato updatedFilmato = filmatoRepository.findById(filmato.getId()).orElseThrow();
+        // Disconnect from session so that the updates on updatedFilmato are not directly saved in db
+        em.detach(updatedFilmato);
+        updatedFilmato.blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
 
-        restFotoMockMvc
+        restFilmatoMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedFoto.getId())
+                put(ENTITY_API_URL_ID, updatedFilmato.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(updatedFoto))
+                    .content(om.writeValueAsBytes(updatedFilmato))
             )
             .andExpect(status().isOk());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertPersistedFotoToMatchAllProperties(updatedFoto);
+        assertPersistedFilmatoToMatchAllProperties(updatedFilmato);
     }
 
     @Test
     @Transactional
-    void putNonExistingFoto() throws Exception {
+    void putNonExistingFilmato() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        foto.setId(longCount.incrementAndGet());
+        filmato.setId(longCount.incrementAndGet());
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restFotoMockMvc
-            .perform(put(ENTITY_API_URL_ID, foto.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(foto)))
+        restFilmatoMockMvc
+            .perform(put(ENTITY_API_URL_ID, filmato.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(filmato)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
-    void putWithIdMismatchFoto() throws Exception {
+    void putWithIdMismatchFilmato() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        foto.setId(longCount.incrementAndGet());
+        filmato.setId(longCount.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restFotoMockMvc
+        restFilmatoMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(foto))
+                    .content(om.writeValueAsBytes(filmato))
             )
             .andExpect(status().isBadRequest());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
-    void putWithMissingIdPathParamFoto() throws Exception {
+    void putWithMissingIdPathParamFilmato() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        foto.setId(longCount.incrementAndGet());
+        filmato.setId(longCount.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restFotoMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(foto)))
+        restFilmatoMockMvc
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(filmato)))
             .andExpect(status().isMethodNotAllowed());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
-    void partialUpdateFotoWithPatch() throws Exception {
+    void partialUpdateFilmatoWithPatch() throws Exception {
         // Initialize the database
-        insertedFoto = fotoRepository.saveAndFlush(foto);
+        insertedFilmato = filmatoRepository.saveAndFlush(filmato);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
-        // Update the foto using partial update
-        Foto partialUpdatedFoto = new Foto();
-        partialUpdatedFoto.setId(foto.getId());
+        // Update the filmato using partial update
+        Filmato partialUpdatedFilmato = new Filmato();
+        partialUpdatedFilmato.setId(filmato.getId());
 
-        partialUpdatedFoto.blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
+        partialUpdatedFilmato.blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
 
-        restFotoMockMvc
+        restFilmatoMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedFoto.getId())
+                patch(ENTITY_API_URL_ID, partialUpdatedFilmato.getId())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedFoto))
+                    .content(om.writeValueAsBytes(partialUpdatedFilmato))
             )
             .andExpect(status().isOk());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
 
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertFotoUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedFoto, foto), getPersistedFoto(foto));
+        assertFilmatoUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedFilmato, filmato), getPersistedFilmato(filmato));
     }
 
     @Test
     @Transactional
-    void fullUpdateFotoWithPatch() throws Exception {
+    void fullUpdateFilmatoWithPatch() throws Exception {
         // Initialize the database
-        insertedFoto = fotoRepository.saveAndFlush(foto);
+        insertedFilmato = filmatoRepository.saveAndFlush(filmato);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
-        // Update the foto using partial update
-        Foto partialUpdatedFoto = new Foto();
-        partialUpdatedFoto.setId(foto.getId());
+        // Update the filmato using partial update
+        Filmato partialUpdatedFilmato = new Filmato();
+        partialUpdatedFilmato.setId(filmato.getId());
 
-        partialUpdatedFoto.blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
+        partialUpdatedFilmato.blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
 
-        restFotoMockMvc
+        restFilmatoMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedFoto.getId())
+                patch(ENTITY_API_URL_ID, partialUpdatedFilmato.getId())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedFoto))
+                    .content(om.writeValueAsBytes(partialUpdatedFilmato))
             )
             .andExpect(status().isOk());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
 
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertFotoUpdatableFieldsEquals(partialUpdatedFoto, getPersistedFoto(partialUpdatedFoto));
+        assertFilmatoUpdatableFieldsEquals(partialUpdatedFilmato, getPersistedFilmato(partialUpdatedFilmato));
     }
 
     @Test
     @Transactional
-    void patchNonExistingFoto() throws Exception {
+    void patchNonExistingFilmato() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        foto.setId(longCount.incrementAndGet());
+        filmato.setId(longCount.incrementAndGet());
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restFotoMockMvc
-            .perform(patch(ENTITY_API_URL_ID, foto.getId()).contentType("application/merge-patch+json").content(om.writeValueAsBytes(foto)))
+        restFilmatoMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID, filmato.getId()).contentType("application/merge-patch+json").content(om.writeValueAsBytes(filmato))
+            )
             .andExpect(status().isBadRequest());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
-    void patchWithIdMismatchFoto() throws Exception {
+    void patchWithIdMismatchFilmato() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        foto.setId(longCount.incrementAndGet());
+        filmato.setId(longCount.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restFotoMockMvc
+        restFilmatoMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(foto))
+                    .content(om.writeValueAsBytes(filmato))
             )
             .andExpect(status().isBadRequest());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
-    void patchWithMissingIdPathParamFoto() throws Exception {
+    void patchWithMissingIdPathParamFilmato() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
-        foto.setId(longCount.incrementAndGet());
+        filmato.setId(longCount.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restFotoMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(foto)))
+        restFilmatoMockMvc
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(filmato)))
             .andExpect(status().isMethodNotAllowed());
 
-        // Validate the Foto in the database
+        // Validate the Filmato in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
-    void deleteFoto() throws Exception {
+    void deleteFilmato() throws Exception {
         // Initialize the database
-        insertedFoto = fotoRepository.saveAndFlush(foto);
+        insertedFilmato = filmatoRepository.saveAndFlush(filmato);
 
         long databaseSizeBeforeDelete = getRepositoryCount();
 
-        // Delete the foto
-        restFotoMockMvc
-            .perform(delete(ENTITY_API_URL_ID, foto.getId()).accept(MediaType.APPLICATION_JSON))
+        // Delete the filmato
+        restFilmatoMockMvc
+            .perform(delete(ENTITY_API_URL_ID, filmato.getId()).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
@@ -377,7 +379,7 @@ class FotoResourceIT {
     }
 
     protected long getRepositoryCount() {
-        return fotoRepository.count();
+        return filmatoRepository.count();
     }
 
     protected void assertIncrementedRepositoryCount(long countBefore) {
@@ -392,15 +394,15 @@ class FotoResourceIT {
         assertThat(countBefore).isEqualTo(getRepositoryCount());
     }
 
-    protected Foto getPersistedFoto(Foto foto) {
-        return fotoRepository.findById(foto.getId()).orElseThrow();
+    protected Filmato getPersistedFilmato(Filmato filmato) {
+        return filmatoRepository.findById(filmato.getId()).orElseThrow();
     }
 
-    protected void assertPersistedFotoToMatchAllProperties(Foto expectedFoto) {
-        assertFotoAllPropertiesEquals(expectedFoto, getPersistedFoto(expectedFoto));
+    protected void assertPersistedFilmatoToMatchAllProperties(Filmato expectedFilmato) {
+        assertFilmatoAllPropertiesEquals(expectedFilmato, getPersistedFilmato(expectedFilmato));
     }
 
-    protected void assertPersistedFotoToMatchUpdatableProperties(Foto expectedFoto) {
-        assertFotoAllUpdatablePropertiesEquals(expectedFoto, getPersistedFoto(expectedFoto));
+    protected void assertPersistedFilmatoToMatchUpdatableProperties(Filmato expectedFilmato) {
+        assertFilmatoAllUpdatablePropertiesEquals(expectedFilmato, getPersistedFilmato(expectedFilmato));
     }
 }

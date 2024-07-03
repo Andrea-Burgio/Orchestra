@@ -1,0 +1,99 @@
+<div>
+  <h2 id="page-heading" data-cy="FilmatoHeading">
+    <span>Filmatoes</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-filmato"
+        [routerLink]="['/filmato/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Filmato</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (filmatoes?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Filmatoes found</span>
+    </div>
+  }
+
+  @if (filmatoes && filmatoes.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="blob">
+              <div class="d-flex">
+                <span>Blob</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nome_file">
+              <div class="d-flex">
+                <span>Nome File</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (filmato of filmatoes; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/filmato', filmato.id, 'view']">{{ filmato.id }}</a>
+              </td>
+              <td>
+                @if (filmato.blob) {
+                  <a (click)="openFile(filmato.blob, filmato.blobContentType)">Open</a>
+                  <span>{{ filmato.blobContentType }}, {{ byteSize(filmato.blob) }}</span>
+                }
+              </td>
+              <td>{{ filmato.nome_file }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/filmato', filmato.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a [routerLink]="['/filmato', filmato.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(filmato)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

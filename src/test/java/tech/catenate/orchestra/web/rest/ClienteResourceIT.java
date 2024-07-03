@@ -261,7 +261,7 @@ class ClienteResourceIT {
         Cliente partialUpdatedCliente = new Cliente();
         partialUpdatedCliente.setId(cliente.getId());
 
-        partialUpdatedCliente.nome(UPDATED_NOME);
+        partialUpdatedCliente.nome(UPDATED_NOME).cognome(UPDATED_COGNOME);
 
         restClienteMockMvc
             .perform(
