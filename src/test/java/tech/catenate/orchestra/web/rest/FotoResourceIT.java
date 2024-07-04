@@ -266,7 +266,7 @@ class FotoResourceIT {
         Foto partialUpdatedFoto = new Foto();
         partialUpdatedFoto.setId(foto.getId());
 
-        partialUpdatedFoto.blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
+        partialUpdatedFoto.nome_file(UPDATED_NOME_FILE);
 
         restFotoMockMvc
             .perform(

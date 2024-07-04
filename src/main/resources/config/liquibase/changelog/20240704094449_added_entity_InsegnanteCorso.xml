@@ -7,20 +7,14 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Added the entity Foto.
+        Added the entity InsegnanteCorso.
     -->
-    <changeSet id="20240703082113-1" author="jhipster">
-        <createTable tableName="foto">
+    <changeSet id="20240704094449-1" author="jhipster">
+        <createTable tableName="insegnante_corso">
             <column name="id" type="bigint" autoIncrement="true" startWith="1500">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="jhi_blob" type="${blobType}">
-                <constraints nullable="true" />
-            </column>
-            <column name="jhi_blob_content_type" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="nome_file" type="varchar(255)">
+            <column name="mese" type="integer">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -37,16 +31,14 @@
           This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
           Spring Boot configuration key.
     -->
-    <changeSet id="20240703082113-1-data" author="jhipster" context="faker">
+    <changeSet id="20240704094449-1-data" author="jhipster" context="faker">
         <loadData
-                  file="config/liquibase/fake-data/foto.csv"
+                  file="config/liquibase/fake-data/insegnante_corso.csv"
                   separator=";"
-                  tableName="foto"
+                  tableName="insegnante_corso"
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
-            <column name="jhi_blob" type="blob"/>
-            <column name="jhi_blob_content_type" type="string"/>
-            <column name="nome_file" type="string"/>
+            <column name="mese" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

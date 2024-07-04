@@ -14,7 +14,7 @@
             <column name="id" type="bigint" autoIncrement="true" startWith="1500">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="jhi_blob" type="longblob">
+            <column name="jhi_blob" type="${blobType}">
                 <constraints nullable="true" />
             </column>
             <column name="jhi_blob_content_type" type="varchar(255)">

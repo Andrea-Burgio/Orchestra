@@ -1,0 +1,19 @@
+{
+  "annotations": {
+    "changelogDate": "20240704094449"
+  },
+  "dto": "no",
+  "fields": [
+    {
+      "fieldName": "mese",
+      "fieldType": "Integer"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "InsegnanteCorso",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

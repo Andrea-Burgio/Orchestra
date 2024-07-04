@@ -1,18 +1,19 @@
 import { ICliente, NewCliente } from './cliente.model';
 
 export const sampleWithRequiredData: ICliente = {
-  id: 11170,
+  id: 4607,
 };
 
 export const sampleWithPartialData: ICliente = {
-  id: 30425,
-  cognome: 'worth firm',
+  id: 30596,
+  nome: 'normalise',
+  cognome: 'closely unnatural',
 };
 
 export const sampleWithFullData: ICliente = {
-  id: 8355,
-  nome: 'aboard geez than',
-  cognome: 'apropos',
+  id: 9217,
+  nome: 'wherever behind though',
+  cognome: 'rightfully',
 };
 
 export const sampleWithNewData: NewCliente = {

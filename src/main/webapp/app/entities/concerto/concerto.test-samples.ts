@@ -3,19 +3,18 @@ import dayjs from 'dayjs/esm';
 import { IConcerto, NewConcerto } from './concerto.model';
 
 export const sampleWithRequiredData: IConcerto = {
-  id: 31636,
+  id: 8361,
 };
 
 export const sampleWithPartialData: IConcerto = {
-  id: 6468,
+  id: 16856,
   data: dayjs('2024-07-03'),
-  nome: 'gratefully brr',
 };
 
 export const sampleWithFullData: IConcerto = {
-  id: 7727,
+  id: 31456,
   data: dayjs('2024-07-02'),
-  nome: 'on',
+  nome: 'general whether',
 };
 
 export const sampleWithNewData: NewConcerto = {
