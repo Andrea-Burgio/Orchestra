@@ -5,6 +5,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
 
+import { ICliente } from 'app/entities/cliente/cliente.model';
+import { ClienteService } from 'app/entities/cliente/service/cliente.service';
 import { ClienteCorsoService } from '../service/cliente-corso.service';
 import { IClienteCorso } from '../cliente-corso.model';
 import { ClienteCorsoFormService } from './cliente-corso-form.service';
@@ -17,6 +19,7 @@ describe('ClienteCorso Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let clienteCorsoFormService: ClienteCorsoFormService;
   let clienteCorsoService: ClienteCorsoService;
+  let clienteService: ClienteService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +41,43 @@ describe('ClienteCorso Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     clienteCorsoFormService = TestBed.inject(ClienteCorsoFormService);
     clienteCorsoService = TestBed.inject(ClienteCorsoService);
+    clienteService = TestBed.inject(ClienteService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
+    it('Should call Cliente query and add missing value', () => {
       const clienteCorso: IClienteCorso = { id: 456 };
+      const cliente: ICliente = { id: 9995 };
+      clienteCorso.cliente = cliente;
+
+      const clienteCollection: ICliente[] = [{ id: 1930 }];
+      jest.spyOn(clienteService, 'query').mockReturnValue(of(new HttpResponse({ body: clienteCollection })));
+      const additionalClientes = [cliente];
+      const expectedCollection: ICliente[] = [...additionalClientes, ...clienteCollection];
+      jest.spyOn(clienteService, 'addClienteToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ clienteCorso });
       comp.ngOnInit();
 
+      expect(clienteService.query).toHaveBeenCalled();
+      expect(clienteService.addClienteToCollectionIfMissing).toHaveBeenCalledWith(
+        clienteCollection,
+        ...additionalClientes.map(expect.objectContaining),
+      );
+      expect(comp.clientesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const clienteCorso: IClienteCorso = { id: 456 };
+      const cliente: ICliente = { id: 12912 };
+      clienteCorso.cliente = cliente;
+
+      activatedRoute.data = of({ clienteCorso });
+      comp.ngOnInit();
+
+      expect(comp.clientesSharedCollection).toContain(cliente);
       expect(comp.clienteCorso).toEqual(clienteCorso);
     });
   });
@@ -118,6 +147,18 @@ describe('ClienteCorso Management Update Component', () => {
       expect(clienteCorsoService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareCliente', () => {
+      it('Should forward to clienteService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(clienteService, 'compareCliente');
+        comp.compareCliente(entity, entity2);
+        expect(clienteService.compareCliente).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

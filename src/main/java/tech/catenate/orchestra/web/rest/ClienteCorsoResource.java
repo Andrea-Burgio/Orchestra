@@ -131,10 +131,13 @@ public class ClienteCorsoResource {
     /**
      * {@code GET  /cliente-corsos} : get all the clienteCorsos.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of clienteCorsos in body.
      */
     @GetMapping("")
-    public List<ClienteCorso> getAllClienteCorsos() {
+    public List<ClienteCorso> getAllClienteCorsos(
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+    ) {
         log.debug("REST request to get all ClienteCorsos");
         return clienteCorsoService.findAll();
     }

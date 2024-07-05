@@ -1,7 +1,10 @@
 package tech.catenate.orchestra.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Cliente.
@@ -23,6 +26,10 @@ public class Cliente implements Serializable {
 
     @Column(name = "cognome")
     private String cognome;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cliente")
+    @JsonIgnoreProperties(value = { "cliente" }, allowSetters = true)
+    private Set<ClienteCorso> clienteCorsos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -63,6 +70,37 @@ public class Cliente implements Serializable {
 
     public void setCognome(String cognome) {
         this.cognome = cognome;
+    }
+
+    public Set<ClienteCorso> getClienteCorsos() {
+        return this.clienteCorsos;
+    }
+
+    public void setClienteCorsos(Set<ClienteCorso> clienteCorsos) {
+        if (this.clienteCorsos != null) {
+            this.clienteCorsos.forEach(i -> i.setCliente(null));
+        }
+        if (clienteCorsos != null) {
+            clienteCorsos.forEach(i -> i.setCliente(this));
+        }
+        this.clienteCorsos = clienteCorsos;
+    }
+
+    public Cliente clienteCorsos(Set<ClienteCorso> clienteCorsos) {
+        this.setClienteCorsos(clienteCorsos);
+        return this;
+    }
+
+    public Cliente addClienteCorso(ClienteCorso clienteCorso) {
+        this.clienteCorsos.add(clienteCorso);
+        clienteCorso.setCliente(this);
+        return this;
+    }
+
+    public Cliente removeClienteCorso(ClienteCorso clienteCorso) {
+        this.clienteCorsos.remove(clienteCorso);
+        clienteCorso.setCliente(null);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -17,7 +17,16 @@
   "name": "ClienteCorso",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityField": "nome",
+      "otherEntityName": "cliente",
+      "otherEntityRelationshipName": "clienteCorso",
+      "relationshipName": "cliente",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceClass"
 }

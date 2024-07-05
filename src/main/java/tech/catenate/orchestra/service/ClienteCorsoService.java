@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.catenate.orchestra.domain.ClienteCorso;
@@ -82,6 +84,15 @@ public class ClienteCorsoService {
     }
 
     /**
+     * Get all the clienteCorsos with eager load of many-to-many relationships.
+     *
+     * @return the list of entities.
+     */
+    public Page<ClienteCorso> findAllWithEagerRelationships(Pageable pageable) {
+        return clienteCorsoRepository.findAllWithEagerRelationships(pageable);
+    }
+
+    /**
      * Get one clienteCorso by id.
      *
      * @param id the id of the entity.
@@ -90,7 +101,7 @@ public class ClienteCorsoService {
     @Transactional(readOnly = true)
     public Optional<ClienteCorso> findOne(Long id) {
         log.debug("Request to get ClienteCorso : {}", id);
-        return clienteCorsoRepository.findById(id);
+        return clienteCorsoRepository.findOneWithEagerRelationships(id);
     }
 
     /**

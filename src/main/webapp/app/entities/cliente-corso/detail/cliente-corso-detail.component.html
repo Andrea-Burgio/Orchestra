@@ -23,6 +23,14 @@
           <dd>
             <span>{{ clienteCorso()!.pagato }}</span>
           </dd>
+          <dt><span>Cliente</span></dt>
+          <dd>
+            @if (clienteCorso()!.cliente) {
+              <div>
+                <a [routerLink]="['/cliente', clienteCorso()!.cliente?.id, 'view']">{{ clienteCorso()!.cliente?.nome }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

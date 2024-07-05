@@ -2,6 +2,7 @@ package tech.catenate.orchestra.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tech.catenate.orchestra.domain.ClienteCorsoTestSamples.*;
+import static tech.catenate.orchestra.domain.ClienteTestSamples.*;
 
 import org.junit.jupiter.api.Test;
 import tech.catenate.orchestra.web.rest.TestUtil;
@@ -20,5 +21,17 @@ class ClienteCorsoTest {
 
         clienteCorso2 = getClienteCorsoSample2();
         assertThat(clienteCorso1).isNotEqualTo(clienteCorso2);
+    }
+
+    @Test
+    void clienteTest() {
+        ClienteCorso clienteCorso = getClienteCorsoRandomSampleGenerator();
+        Cliente clienteBack = getClienteRandomSampleGenerator();
+
+        clienteCorso.setCliente(clienteBack);
+        assertThat(clienteCorso.getCliente()).isEqualTo(clienteBack);
+
+        clienteCorso.cliente(null);
+        assertThat(clienteCorso.getCliente()).isNull();
     }
 }

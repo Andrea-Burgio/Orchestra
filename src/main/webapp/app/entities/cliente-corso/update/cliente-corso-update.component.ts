@@ -2,11 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { ICliente } from 'app/entities/cliente/cliente.model';
+import { ClienteService } from 'app/entities/cliente/service/cliente.service';
 import { IClienteCorso } from '../cliente-corso.model';
 import { ClienteCorsoService } from '../service/cliente-corso.service';
 import { ClienteCorsoFormService, ClienteCorsoFormGroup } from './cliente-corso-form.service';
@@ -21,12 +23,17 @@ export class ClienteCorsoUpdateComponent implements OnInit {
   isSaving = false;
   clienteCorso: IClienteCorso | null = null;
 
+  clientesSharedCollection: ICliente[] = [];
+
   protected clienteCorsoService = inject(ClienteCorsoService);
   protected clienteCorsoFormService = inject(ClienteCorsoFormService);
+  protected clienteService = inject(ClienteService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: ClienteCorsoFormGroup = this.clienteCorsoFormService.createClienteCorsoFormGroup();
+
+  compareCliente = (o1: ICliente | null, o2: ICliente | null): boolean => this.clienteService.compareCliente(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ clienteCorso }) => {
@@ -34,6 +41,8 @@ export class ClienteCorsoUpdateComponent implements OnInit {
       if (clienteCorso) {
         this.updateForm(clienteCorso);
       }
+
+      this.loadRelationshipsOptions();
     });
   }
 
@@ -73,5 +82,20 @@ export class ClienteCorsoUpdateComponent implements OnInit {
   protected updateForm(clienteCorso: IClienteCorso): void {
     this.clienteCorso = clienteCorso;
     this.clienteCorsoFormService.resetForm(this.editForm, clienteCorso);
+
+    this.clientesSharedCollection = this.clienteService.addClienteToCollectionIfMissing<ICliente>(
+      this.clientesSharedCollection,
+      clienteCorso.cliente,
+    );
+  }
+
+  protected loadRelationshipsOptions(): void {
+    this.clienteService
+      .query()
+      .pipe(map((res: HttpResponse<ICliente[]>) => res.body ?? []))
+      .pipe(
+        map((clientes: ICliente[]) => this.clienteService.addClienteToCollectionIfMissing<ICliente>(clientes, this.clienteCorso?.cliente)),
+      )
+      .subscribe((clientes: ICliente[]) => (this.clientesSharedCollection = clientes));
   }
 }

@@ -81,6 +81,15 @@ public class InsegnanteCorsoService {
     }
 
     /**
+     * Get all the insegnanteCorsos with eager load of many-to-many relationships.
+     *
+     * @return the list of entities.
+     */
+    public Page<InsegnanteCorso> findAllWithEagerRelationships(Pageable pageable) {
+        return insegnanteCorsoRepository.findAllWithEagerRelationships(pageable);
+    }
+
+    /**
      * Get all the InsegnanteCorsos along with their associated Insegnante and Corso entities.
      *
      * @return the list of InsegnanteCorso entities with their associated Insegnante and Corso entities.
@@ -89,15 +98,6 @@ public class InsegnanteCorsoService {
     public List<InsegnanteCorso> findAllWithToOneRelationships() {
         log.debug("Request to get all InsegnanteCorsos");
         return insegnanteCorsoRepository.findAllWithToOneRelationships();
-    }
-
-    /**
-     * Get all the insegnanteCorsos with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Page<InsegnanteCorso> findAllWithEagerRelationships(Pageable pageable) {
-        return insegnanteCorsoRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**

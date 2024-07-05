@@ -22,6 +22,7 @@ describe('ClienteCorso Form Service', () => {
             id: expect.any(Object),
             mese: expect.any(Object),
             pagato: expect.any(Object),
+            cliente: expect.any(Object),
           }),
         );
       });
@@ -34,6 +35,7 @@ describe('ClienteCorso Form Service', () => {
             id: expect.any(Object),
             mese: expect.any(Object),
             pagato: expect.any(Object),
+            cliente: expect.any(Object),
           }),
         );
       });
