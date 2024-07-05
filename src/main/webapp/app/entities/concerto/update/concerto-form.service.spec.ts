@@ -22,6 +22,7 @@ describe('Concerto Form Service', () => {
             id: expect.any(Object),
             data: expect.any(Object),
             nome: expect.any(Object),
+            corso: expect.any(Object),
           }),
         );
       });
@@ -34,6 +35,7 @@ describe('Concerto Form Service', () => {
             id: expect.any(Object),
             data: expect.any(Object),
             nome: expect.any(Object),
+            corso: expect.any(Object),
           }),
         );
       });

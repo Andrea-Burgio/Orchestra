@@ -131,12 +131,13 @@ public class ConcertoResource {
     /**
      * {@code GET  /concertos} : get all the concertos.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of concertos in body.
      */
     @GetMapping("")
-    public List<Concerto> getAllConcertos() {
+    public List<Concerto> getAllConcertos(@RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload) {
         log.debug("REST request to get all Concertos");
-        return concertoService.findAll();
+        return concertoService.findAllWithToOneRelationships();
     }
 
     /**

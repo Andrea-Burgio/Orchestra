@@ -23,6 +23,14 @@
           <dd>
             <span>{{ concerto()!.nome }}</span>
           </dd>
+          <dt><span>Corso</span></dt>
+          <dd>
+            @if (concerto()!.corso) {
+              <div>
+                <a [routerLink]="['/corso', concerto()!.corso?.id, 'view']">{{ concerto()!.corso?.nome }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

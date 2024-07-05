@@ -17,7 +17,16 @@
   "name": "Concerto",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityField": "nome",
+      "otherEntityName": "corso",
+      "otherEntityRelationshipName": "concerto",
+      "relationshipName": "corso",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceClass"
 }

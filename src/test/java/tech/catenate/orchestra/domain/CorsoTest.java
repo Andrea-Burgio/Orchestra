@@ -2,6 +2,7 @@ package tech.catenate.orchestra.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tech.catenate.orchestra.domain.ClienteCorsoTestSamples.*;
+import static tech.catenate.orchestra.domain.ConcertoTestSamples.*;
 import static tech.catenate.orchestra.domain.CorsoTestSamples.*;
 import static tech.catenate.orchestra.domain.InsegnanteCorsoTestSamples.*;
 
@@ -24,6 +25,28 @@ class CorsoTest {
 
         corso2 = getCorsoSample2();
         assertThat(corso1).isNotEqualTo(corso2);
+    }
+
+    @Test
+    void concertoTest() {
+        Corso corso = getCorsoRandomSampleGenerator();
+        Concerto concertoBack = getConcertoRandomSampleGenerator();
+
+        corso.addConcerto(concertoBack);
+        assertThat(corso.getConcertos()).containsOnly(concertoBack);
+        assertThat(concertoBack.getCorso()).isEqualTo(corso);
+
+        corso.removeConcerto(concertoBack);
+        assertThat(corso.getConcertos()).doesNotContain(concertoBack);
+        assertThat(concertoBack.getCorso()).isNull();
+
+        corso.concertos(new HashSet<>(Set.of(concertoBack)));
+        assertThat(corso.getConcertos()).containsOnly(concertoBack);
+        assertThat(concertoBack.getCorso()).isEqualTo(corso);
+
+        corso.setConcertos(new HashSet<>());
+        assertThat(corso.getConcertos()).doesNotContain(concertoBack);
+        assertThat(concertoBack.getCorso()).isNull();
     }
 
     @Test

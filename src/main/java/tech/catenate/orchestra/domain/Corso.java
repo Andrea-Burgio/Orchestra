@@ -28,6 +28,10 @@ public class Corso implements Serializable {
     private String nome;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "corso")
+    @JsonIgnoreProperties(value = { "corso" }, allowSetters = true)
+    private Set<Concerto> concertos = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "corso")
     @JsonIgnoreProperties(value = { "insegnante", "corso" }, allowSetters = true)
     private Set<InsegnanteCorso> insegnanteCorsos = new HashSet<>();
 
@@ -74,6 +78,37 @@ public class Corso implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Set<Concerto> getConcertos() {
+        return this.concertos;
+    }
+
+    public void setConcertos(Set<Concerto> concertos) {
+        if (this.concertos != null) {
+            this.concertos.forEach(i -> i.setCorso(null));
+        }
+        if (concertos != null) {
+            concertos.forEach(i -> i.setCorso(this));
+        }
+        this.concertos = concertos;
+    }
+
+    public Corso concertos(Set<Concerto> concertos) {
+        this.setConcertos(concertos);
+        return this;
+    }
+
+    public Corso addConcerto(Concerto concerto) {
+        this.concertos.add(concerto);
+        concerto.setCorso(this);
+        return this;
+    }
+
+    public Corso removeConcerto(Concerto concerto) {
+        this.concertos.remove(concerto);
+        concerto.setCorso(null);
+        return this;
     }
 
     public Set<InsegnanteCorso> getInsegnanteCorsos() {

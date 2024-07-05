@@ -20,6 +20,7 @@ type ConcertoFormGroupContent = {
   id: FormControl<IConcerto['id'] | NewConcerto['id']>;
   data: FormControl<IConcerto['data']>;
   nome: FormControl<IConcerto['nome']>;
+  corso: FormControl<IConcerto['corso']>;
 };
 
 export type ConcertoFormGroup = FormGroup<ConcertoFormGroupContent>;
@@ -41,6 +42,7 @@ export class ConcertoFormService {
       ),
       data: new FormControl(concertoRawValue.data),
       nome: new FormControl(concertoRawValue.nome),
+      corso: new FormControl(concertoRawValue.corso),
     });
   }
 

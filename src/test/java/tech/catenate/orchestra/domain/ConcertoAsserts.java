@@ -57,5 +57,9 @@ public class ConcertoAsserts {
      * @param expected the expected entity
      * @param actual the actual entity
      */
-    public static void assertConcertoUpdatableRelationshipsEquals(Concerto expected, Concerto actual) {}
+    public static void assertConcertoUpdatableRelationshipsEquals(Concerto expected, Concerto actual) {
+        assertThat(expected)
+            .as("Verify Concerto relationships")
+            .satisfies(e -> assertThat(e.getCorso()).as("check corso").isEqualTo(actual.getCorso()));
+    }
 }

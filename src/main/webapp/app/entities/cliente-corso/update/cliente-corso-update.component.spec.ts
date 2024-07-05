@@ -75,10 +75,10 @@ describe('ClienteCorso Management Update Component', () => {
 
     it('Should call Corso query and add missing value', () => {
       const clienteCorso: IClienteCorso = { id: 456 };
-      const corso: ICorso = { id: 24799 };
+      const corso: ICorso = { id: 11450 };
       clienteCorso.corso = corso;
 
-      const corsoCollection: ICorso[] = [{ id: 21851 }];
+      const corsoCollection: ICorso[] = [{ id: 957 }];
       jest.spyOn(corsoService, 'query').mockReturnValue(of(new HttpResponse({ body: corsoCollection })));
       const additionalCorsos = [corso];
       const expectedCollection: ICorso[] = [...additionalCorsos, ...corsoCollection];
@@ -99,7 +99,7 @@ describe('ClienteCorso Management Update Component', () => {
       const clienteCorso: IClienteCorso = { id: 456 };
       const cliente: ICliente = { id: 12912 };
       clienteCorso.cliente = cliente;
-      const corso: ICorso = { id: 14665 };
+      const corso: ICorso = { id: 6754 };
       clienteCorso.corso = corso;
 
       activatedRoute.data = of({ clienteCorso });

@@ -5,6 +5,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
 
+import { ICorso } from 'app/entities/corso/corso.model';
+import { CorsoService } from 'app/entities/corso/service/corso.service';
 import { ConcertoService } from '../service/concerto.service';
 import { IConcerto } from '../concerto.model';
 import { ConcertoFormService } from './concerto-form.service';
@@ -17,6 +19,7 @@ describe('Concerto Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let concertoFormService: ConcertoFormService;
   let concertoService: ConcertoService;
+  let corsoService: CorsoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +41,43 @@ describe('Concerto Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     concertoFormService = TestBed.inject(ConcertoFormService);
     concertoService = TestBed.inject(ConcertoService);
+    corsoService = TestBed.inject(CorsoService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
+    it('Should call Corso query and add missing value', () => {
       const concerto: IConcerto = { id: 456 };
+      const corso: ICorso = { id: 29774 };
+      concerto.corso = corso;
+
+      const corsoCollection: ICorso[] = [{ id: 9757 }];
+      jest.spyOn(corsoService, 'query').mockReturnValue(of(new HttpResponse({ body: corsoCollection })));
+      const additionalCorsos = [corso];
+      const expectedCollection: ICorso[] = [...additionalCorsos, ...corsoCollection];
+      jest.spyOn(corsoService, 'addCorsoToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ concerto });
       comp.ngOnInit();
 
+      expect(corsoService.query).toHaveBeenCalled();
+      expect(corsoService.addCorsoToCollectionIfMissing).toHaveBeenCalledWith(
+        corsoCollection,
+        ...additionalCorsos.map(expect.objectContaining),
+      );
+      expect(comp.corsosSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const concerto: IConcerto = { id: 456 };
+      const corso: ICorso = { id: 25856 };
+      concerto.corso = corso;
+
+      activatedRoute.data = of({ concerto });
+      comp.ngOnInit();
+
+      expect(comp.corsosSharedCollection).toContain(corso);
       expect(comp.concerto).toEqual(concerto);
     });
   });
@@ -118,6 +147,18 @@ describe('Concerto Management Update Component', () => {
       expect(concertoService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareCorso', () => {
+      it('Should forward to corsoService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(corsoService, 'compareCorso');
+        comp.compareCorso(entity, entity2);
+        expect(corsoService.compareCorso).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

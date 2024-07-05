@@ -1,5 +1,6 @@
 package tech.catenate.orchestra.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -24,6 +25,10 @@ public class Concerto implements Serializable {
 
     @Column(name = "nome")
     private String nome;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "concertos", "insegnanteCorsos", "clienteCorsos" }, allowSetters = true)
+    private Corso corso;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -64,6 +69,19 @@ public class Concerto implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Corso getCorso() {
+        return this.corso;
+    }
+
+    public void setCorso(Corso corso) {
+        this.corso = corso;
+    }
+
+    public Concerto corso(Corso corso) {
+        this.setCorso(corso);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
