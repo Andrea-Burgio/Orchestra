@@ -7,8 +7,10 @@ import { of, Subject, from } from 'rxjs';
 
 import { ICliente } from 'app/entities/cliente/cliente.model';
 import { ClienteService } from 'app/entities/cliente/service/cliente.service';
-import { ClienteCorsoService } from '../service/cliente-corso.service';
+import { ICorso } from 'app/entities/corso/corso.model';
+import { CorsoService } from 'app/entities/corso/service/corso.service';
 import { IClienteCorso } from '../cliente-corso.model';
+import { ClienteCorsoService } from '../service/cliente-corso.service';
 import { ClienteCorsoFormService } from './cliente-corso-form.service';
 
 import { ClienteCorsoUpdateComponent } from './cliente-corso-update.component';
@@ -20,6 +22,7 @@ describe('ClienteCorso Management Update Component', () => {
   let clienteCorsoFormService: ClienteCorsoFormService;
   let clienteCorsoService: ClienteCorsoService;
   let clienteService: ClienteService;
+  let corsoService: CorsoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -42,6 +45,7 @@ describe('ClienteCorso Management Update Component', () => {
     clienteCorsoFormService = TestBed.inject(ClienteCorsoFormService);
     clienteCorsoService = TestBed.inject(ClienteCorsoService);
     clienteService = TestBed.inject(ClienteService);
+    corsoService = TestBed.inject(CorsoService);
 
     comp = fixture.componentInstance;
   });
@@ -69,15 +73,40 @@ describe('ClienteCorso Management Update Component', () => {
       expect(comp.clientesSharedCollection).toEqual(expectedCollection);
     });
 
+    it('Should call Corso query and add missing value', () => {
+      const clienteCorso: IClienteCorso = { id: 456 };
+      const corso: ICorso = { id: 24799 };
+      clienteCorso.corso = corso;
+
+      const corsoCollection: ICorso[] = [{ id: 21851 }];
+      jest.spyOn(corsoService, 'query').mockReturnValue(of(new HttpResponse({ body: corsoCollection })));
+      const additionalCorsos = [corso];
+      const expectedCollection: ICorso[] = [...additionalCorsos, ...corsoCollection];
+      jest.spyOn(corsoService, 'addCorsoToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ clienteCorso });
+      comp.ngOnInit();
+
+      expect(corsoService.query).toHaveBeenCalled();
+      expect(corsoService.addCorsoToCollectionIfMissing).toHaveBeenCalledWith(
+        corsoCollection,
+        ...additionalCorsos.map(expect.objectContaining),
+      );
+      expect(comp.corsosSharedCollection).toEqual(expectedCollection);
+    });
+
     it('Should update editForm', () => {
       const clienteCorso: IClienteCorso = { id: 456 };
       const cliente: ICliente = { id: 12912 };
       clienteCorso.cliente = cliente;
+      const corso: ICorso = { id: 14665 };
+      clienteCorso.corso = corso;
 
       activatedRoute.data = of({ clienteCorso });
       comp.ngOnInit();
 
       expect(comp.clientesSharedCollection).toContain(cliente);
+      expect(comp.corsosSharedCollection).toContain(corso);
       expect(comp.clienteCorso).toEqual(clienteCorso);
     });
   });
@@ -158,6 +187,16 @@ describe('ClienteCorso Management Update Component', () => {
         jest.spyOn(clienteService, 'compareCliente');
         comp.compareCliente(entity, entity2);
         expect(clienteService.compareCliente).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareCorso', () => {
+      it('Should forward to corsoService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(corsoService, 'compareCorso');
+        comp.compareCorso(entity, entity2);
+        expect(corsoService.compareCorso).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

@@ -29,6 +29,10 @@ public class ClienteCorso implements Serializable {
     @JsonIgnoreProperties(value = { "clienteCorsos" }, allowSetters = true)
     private Cliente cliente;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "insegnanteCorsos", "clienteCorsos" }, allowSetters = true)
+    private Corso corso;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -80,6 +84,19 @@ public class ClienteCorso implements Serializable {
 
     public ClienteCorso cliente(Cliente cliente) {
         this.setCliente(cliente);
+        return this;
+    }
+
+    public Corso getCorso() {
+        return this.corso;
+    }
+
+    public void setCorso(Corso corso) {
+        this.corso = corso;
+    }
+
+    public ClienteCorso corso(Corso corso) {
+        this.setCorso(corso);
         return this;
     }
 

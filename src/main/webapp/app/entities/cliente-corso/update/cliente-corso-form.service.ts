@@ -21,6 +21,7 @@ type ClienteCorsoFormGroupContent = {
   mese: FormControl<IClienteCorso['mese']>;
   pagato: FormControl<IClienteCorso['pagato']>;
   cliente: FormControl<IClienteCorso['cliente']>;
+  corso: FormControl<IClienteCorso['corso']>;
 };
 
 export type ClienteCorsoFormGroup = FormGroup<ClienteCorsoFormGroupContent>;
@@ -43,6 +44,7 @@ export class ClienteCorsoFormService {
       mese: new FormControl(clienteCorsoRawValue.mese),
       pagato: new FormControl(clienteCorsoRawValue.pagato),
       cliente: new FormControl(clienteCorsoRawValue.cliente),
+      corso: new FormControl(clienteCorsoRawValue.corso),
     });
   }
 

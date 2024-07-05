@@ -31,6 +31,10 @@ public class Corso implements Serializable {
     @JsonIgnoreProperties(value = { "insegnante", "corso" }, allowSetters = true)
     private Set<InsegnanteCorso> insegnanteCorsos = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "corso")
+    @JsonIgnoreProperties(value = { "cliente", "corso" }, allowSetters = true)
+    private Set<ClienteCorso> clienteCorsos = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -100,6 +104,37 @@ public class Corso implements Serializable {
     public Corso removeInsegnanteCorso(InsegnanteCorso insegnanteCorso) {
         this.insegnanteCorsos.remove(insegnanteCorso);
         insegnanteCorso.setCorso(null);
+        return this;
+    }
+
+    public Set<ClienteCorso> getClienteCorsos() {
+        return this.clienteCorsos;
+    }
+
+    public void setClienteCorsos(Set<ClienteCorso> clienteCorsos) {
+        if (this.clienteCorsos != null) {
+            this.clienteCorsos.forEach(i -> i.setCorso(null));
+        }
+        if (clienteCorsos != null) {
+            clienteCorsos.forEach(i -> i.setCorso(this));
+        }
+        this.clienteCorsos = clienteCorsos;
+    }
+
+    public Corso clienteCorsos(Set<ClienteCorso> clienteCorsos) {
+        this.setClienteCorsos(clienteCorsos);
+        return this;
+    }
+
+    public Corso addClienteCorso(ClienteCorso clienteCorso) {
+        this.clienteCorsos.add(clienteCorso);
+        clienteCorso.setCorso(this);
+        return this;
+    }
+
+    public Corso removeClienteCorso(ClienteCorso clienteCorso) {
+        this.clienteCorsos.remove(clienteCorso);
+        clienteCorso.setCorso(null);
         return this;
     }
 

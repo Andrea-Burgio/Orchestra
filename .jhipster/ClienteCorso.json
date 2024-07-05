@@ -25,6 +25,14 @@
       "relationshipName": "cliente",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "nome",
+      "otherEntityName": "corso",
+      "otherEntityRelationshipName": "clienteCorso",
+      "relationshipName": "corso",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
     }
   ],
   "searchEngine": "no",

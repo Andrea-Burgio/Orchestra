@@ -9,8 +9,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ICliente } from 'app/entities/cliente/cliente.model';
 import { ClienteService } from 'app/entities/cliente/service/cliente.service';
-import { IClienteCorso } from '../cliente-corso.model';
+import { ICorso } from 'app/entities/corso/corso.model';
+import { CorsoService } from 'app/entities/corso/service/corso.service';
 import { ClienteCorsoService } from '../service/cliente-corso.service';
+import { IClienteCorso } from '../cliente-corso.model';
 import { ClienteCorsoFormService, ClienteCorsoFormGroup } from './cliente-corso-form.service';
 
 @Component({
@@ -24,16 +26,20 @@ export class ClienteCorsoUpdateComponent implements OnInit {
   clienteCorso: IClienteCorso | null = null;
 
   clientesSharedCollection: ICliente[] = [];
+  corsosSharedCollection: ICorso[] = [];
 
   protected clienteCorsoService = inject(ClienteCorsoService);
   protected clienteCorsoFormService = inject(ClienteCorsoFormService);
   protected clienteService = inject(ClienteService);
+  protected corsoService = inject(CorsoService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: ClienteCorsoFormGroup = this.clienteCorsoFormService.createClienteCorsoFormGroup();
 
   compareCliente = (o1: ICliente | null, o2: ICliente | null): boolean => this.clienteService.compareCliente(o1, o2);
+
+  compareCorso = (o1: ICorso | null, o2: ICorso | null): boolean => this.corsoService.compareCorso(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ clienteCorso }) => {
@@ -87,6 +93,7 @@ export class ClienteCorsoUpdateComponent implements OnInit {
       this.clientesSharedCollection,
       clienteCorso.cliente,
     );
+    this.corsosSharedCollection = this.corsoService.addCorsoToCollectionIfMissing<ICorso>(this.corsosSharedCollection, clienteCorso.corso);
   }
 
   protected loadRelationshipsOptions(): void {
@@ -97,5 +104,11 @@ export class ClienteCorsoUpdateComponent implements OnInit {
         map((clientes: ICliente[]) => this.clienteService.addClienteToCollectionIfMissing<ICliente>(clientes, this.clienteCorso?.cliente)),
       )
       .subscribe((clientes: ICliente[]) => (this.clientesSharedCollection = clientes));
+
+    this.corsoService
+      .query()
+      .pipe(map((res: HttpResponse<ICorso[]>) => res.body ?? []))
+      .pipe(map((corsos: ICorso[]) => this.corsoService.addCorsoToCollectionIfMissing<ICorso>(corsos, this.clienteCorso?.corso)))
+      .subscribe((corsos: ICorso[]) => (this.corsosSharedCollection = corsos));
   }
 }

@@ -3,6 +3,7 @@ package tech.catenate.orchestra.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tech.catenate.orchestra.domain.ClienteCorsoTestSamples.*;
 import static tech.catenate.orchestra.domain.ClienteTestSamples.*;
+import static tech.catenate.orchestra.domain.CorsoTestSamples.*;
 
 import org.junit.jupiter.api.Test;
 import tech.catenate.orchestra.web.rest.TestUtil;
@@ -33,5 +34,17 @@ class ClienteCorsoTest {
 
         clienteCorso.cliente(null);
         assertThat(clienteCorso.getCliente()).isNull();
+    }
+
+    @Test
+    void corsoTest() {
+        ClienteCorso clienteCorso = getClienteCorsoRandomSampleGenerator();
+        Corso corsoBack = getCorsoRandomSampleGenerator();
+
+        clienteCorso.setCorso(corsoBack);
+        assertThat(clienteCorso.getCorso()).isEqualTo(corsoBack);
+
+        clienteCorso.corso(null);
+        assertThat(clienteCorso.getCorso()).isNull();
     }
 }

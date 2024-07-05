@@ -84,6 +84,17 @@ public class ClienteCorsoService {
     }
 
     /**
+     * Get all the InsegnanteCorsos along with their associated Insegnante and Corso entities.
+     *
+     * @return the list of InsegnanteCorso entities with their associated Insegnante and Corso entities.
+     */
+    @Transactional(readOnly = true)
+    public List<ClienteCorso> findAllWithToOneRelationships() {
+        log.debug("Request to get all InsegnanteCorsos");
+        return clienteCorsoRepository.findAllWithToOneRelationships();
+    }
+
+    /**
      * Get all the clienteCorsos with eager load of many-to-many relationships.
      *
      * @return the list of entities.

@@ -60,6 +60,7 @@ public class ClienteCorsoAsserts {
     public static void assertClienteCorsoUpdatableRelationshipsEquals(ClienteCorso expected, ClienteCorso actual) {
         assertThat(expected)
             .as("Verify ClienteCorso relationships")
-            .satisfies(e -> assertThat(e.getCliente()).as("check cliente").isEqualTo(actual.getCliente()));
+            .satisfies(e -> assertThat(e.getCliente()).as("check cliente").isEqualTo(actual.getCliente()))
+            .satisfies(e -> assertThat(e.getCorso()).as("check corso").isEqualTo(actual.getCorso()));
     }
 }

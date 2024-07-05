@@ -27,17 +27,16 @@ public interface ClienteCorsoRepository extends JpaRepository<ClienteCorso, Long
     }
 
     @Query(
-        value = "select clienteCorso from ClienteCorso clienteCorso left join fetch clienteCorso.cliente",
+        value = "select clienteCorso from ClienteCorso clienteCorso left join fetch clienteCorso.cliente left join fetch clienteCorso.corso",
         countQuery = "select count(clienteCorso) from ClienteCorso clienteCorso"
     )
     Page<ClienteCorso> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select clienteCorso from ClienteCorso clienteCorso left join fetch clienteCorso.cliente")
+    @Query("select clienteCorso from ClienteCorso clienteCorso left join fetch clienteCorso.cliente left join fetch clienteCorso.corso")
     List<ClienteCorso> findAllWithToOneRelationships();
 
-    @Query("select clienteCorso from ClienteCorso clienteCorso left join fetch clienteCorso.cliente where clienteCorso.id =:id")
+    @Query(
+        "select clienteCorso from ClienteCorso clienteCorso left join fetch clienteCorso.cliente left join fetch clienteCorso.corso where clienteCorso.id =:id"
+    )
     Optional<ClienteCorso> findOneWithToOneRelationships(@Param("id") Long id);
-
-    @Query("select c from ClienteCorso c left join fetch c.cliente")
-    List<ClienteCorso> findAll();
 }
