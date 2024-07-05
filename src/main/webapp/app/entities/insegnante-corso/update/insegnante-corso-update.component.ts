@@ -2,11 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { IInsegnante } from 'app/entities/insegnante/insegnante.model';
+import { InsegnanteService } from 'app/entities/insegnante/service/insegnante.service';
 import { IInsegnanteCorso } from '../insegnante-corso.model';
 import { InsegnanteCorsoService } from '../service/insegnante-corso.service';
 import { InsegnanteCorsoFormService, InsegnanteCorsoFormGroup } from './insegnante-corso-form.service';
@@ -21,12 +23,17 @@ export class InsegnanteCorsoUpdateComponent implements OnInit {
   isSaving = false;
   insegnanteCorso: IInsegnanteCorso | null = null;
 
+  insegnantesSharedCollection: IInsegnante[] = [];
+
   protected insegnanteCorsoService = inject(InsegnanteCorsoService);
   protected insegnanteCorsoFormService = inject(InsegnanteCorsoFormService);
+  protected insegnanteService = inject(InsegnanteService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: InsegnanteCorsoFormGroup = this.insegnanteCorsoFormService.createInsegnanteCorsoFormGroup();
+
+  compareInsegnante = (o1: IInsegnante | null, o2: IInsegnante | null): boolean => this.insegnanteService.compareInsegnante(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ insegnanteCorso }) => {
@@ -34,6 +41,8 @@ export class InsegnanteCorsoUpdateComponent implements OnInit {
       if (insegnanteCorso) {
         this.updateForm(insegnanteCorso);
       }
+
+      this.loadRelationshipsOptions();
     });
   }
 
@@ -73,5 +82,22 @@ export class InsegnanteCorsoUpdateComponent implements OnInit {
   protected updateForm(insegnanteCorso: IInsegnanteCorso): void {
     this.insegnanteCorso = insegnanteCorso;
     this.insegnanteCorsoFormService.resetForm(this.editForm, insegnanteCorso);
+
+    this.insegnantesSharedCollection = this.insegnanteService.addInsegnanteToCollectionIfMissing<IInsegnante>(
+      this.insegnantesSharedCollection,
+      insegnanteCorso.insegnante,
+    );
+  }
+
+  protected loadRelationshipsOptions(): void {
+    this.insegnanteService
+      .query()
+      .pipe(map((res: HttpResponse<IInsegnante[]>) => res.body ?? []))
+      .pipe(
+        map((insegnantes: IInsegnante[]) =>
+          this.insegnanteService.addInsegnanteToCollectionIfMissing<IInsegnante>(insegnantes, this.insegnanteCorso?.insegnante),
+        ),
+      )
+      .subscribe((insegnantes: IInsegnante[]) => (this.insegnantesSharedCollection = insegnantes));
   }
 }

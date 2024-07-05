@@ -17,6 +17,23 @@
           <label class="form-label" for="field_mese">Mese</label>
           <input type="number" class="form-control" name="mese" id="field_mese" data-cy="mese" formControlName="mese" />
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_insegnante">Insegnante</label>
+          <select
+            class="form-control"
+            id="field_insegnante"
+            data-cy="insegnante"
+            name="insegnante"
+            formControlName="insegnante"
+            [compareWith]="compareInsegnante"
+          >
+            <option [ngValue]="null"></option>
+            @for (insegnanteOption of insegnantesSharedCollection; track $index) {
+              <option [ngValue]="insegnanteOption">{{ insegnanteOption.nome }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

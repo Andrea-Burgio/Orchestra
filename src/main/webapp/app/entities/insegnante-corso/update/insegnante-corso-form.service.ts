@@ -19,6 +19,7 @@ type InsegnanteCorsoFormDefaults = Pick<NewInsegnanteCorso, 'id'>;
 type InsegnanteCorsoFormGroupContent = {
   id: FormControl<IInsegnanteCorso['id'] | NewInsegnanteCorso['id']>;
   mese: FormControl<IInsegnanteCorso['mese']>;
+  insegnante: FormControl<IInsegnanteCorso['insegnante']>;
 };
 
 export type InsegnanteCorsoFormGroup = FormGroup<InsegnanteCorsoFormGroupContent>;
@@ -39,6 +40,7 @@ export class InsegnanteCorsoFormService {
         },
       ),
       mese: new FormControl(insegnanteCorsoRawValue.mese),
+      insegnante: new FormControl(insegnanteCorsoRawValue.insegnante),
     });
   }
 

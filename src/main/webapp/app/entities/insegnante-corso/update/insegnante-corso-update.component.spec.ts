@@ -5,6 +5,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
 
+import { IInsegnante } from 'app/entities/insegnante/insegnante.model';
+import { InsegnanteService } from 'app/entities/insegnante/service/insegnante.service';
 import { InsegnanteCorsoService } from '../service/insegnante-corso.service';
 import { IInsegnanteCorso } from '../insegnante-corso.model';
 import { InsegnanteCorsoFormService } from './insegnante-corso-form.service';
@@ -17,6 +19,7 @@ describe('InsegnanteCorso Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let insegnanteCorsoFormService: InsegnanteCorsoFormService;
   let insegnanteCorsoService: InsegnanteCorsoService;
+  let insegnanteService: InsegnanteService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +41,43 @@ describe('InsegnanteCorso Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     insegnanteCorsoFormService = TestBed.inject(InsegnanteCorsoFormService);
     insegnanteCorsoService = TestBed.inject(InsegnanteCorsoService);
+    insegnanteService = TestBed.inject(InsegnanteService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
+    it('Should call Insegnante query and add missing value', () => {
       const insegnanteCorso: IInsegnanteCorso = { id: 456 };
+      const insegnante: IInsegnante = { id: 20801 };
+      insegnanteCorso.insegnante = insegnante;
+
+      const insegnanteCollection: IInsegnante[] = [{ id: 13025 }];
+      jest.spyOn(insegnanteService, 'query').mockReturnValue(of(new HttpResponse({ body: insegnanteCollection })));
+      const additionalInsegnantes = [insegnante];
+      const expectedCollection: IInsegnante[] = [...additionalInsegnantes, ...insegnanteCollection];
+      jest.spyOn(insegnanteService, 'addInsegnanteToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ insegnanteCorso });
       comp.ngOnInit();
 
+      expect(insegnanteService.query).toHaveBeenCalled();
+      expect(insegnanteService.addInsegnanteToCollectionIfMissing).toHaveBeenCalledWith(
+        insegnanteCollection,
+        ...additionalInsegnantes.map(expect.objectContaining),
+      );
+      expect(comp.insegnantesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const insegnanteCorso: IInsegnanteCorso = { id: 456 };
+      const insegnante: IInsegnante = { id: 19656 };
+      insegnanteCorso.insegnante = insegnante;
+
+      activatedRoute.data = of({ insegnanteCorso });
+      comp.ngOnInit();
+
+      expect(comp.insegnantesSharedCollection).toContain(insegnante);
       expect(comp.insegnanteCorso).toEqual(insegnanteCorso);
     });
   });
@@ -118,6 +147,18 @@ describe('InsegnanteCorso Management Update Component', () => {
       expect(insegnanteCorsoService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareInsegnante', () => {
+      it('Should forward to insegnanteService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(insegnanteService, 'compareInsegnante');
+        comp.compareInsegnante(entity, entity2);
+        expect(insegnanteService.compareInsegnante).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

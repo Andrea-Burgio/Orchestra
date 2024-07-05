@@ -1,7 +1,10 @@
 package tech.catenate.orchestra.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Insegnante.
@@ -23,6 +26,10 @@ public class Insegnante implements Serializable {
 
     @Column(name = "cognome")
     private String cognome;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "insegnante")
+    @JsonIgnoreProperties(value = { "insegnante" }, allowSetters = true)
+    private Set<InsegnanteCorso> insegnanteCorsos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -63,6 +70,37 @@ public class Insegnante implements Serializable {
 
     public void setCognome(String cognome) {
         this.cognome = cognome;
+    }
+
+    public Set<InsegnanteCorso> getInsegnanteCorsos() {
+        return this.insegnanteCorsos;
+    }
+
+    public void setInsegnanteCorsos(Set<InsegnanteCorso> insegnanteCorsos) {
+        if (this.insegnanteCorsos != null) {
+            this.insegnanteCorsos.forEach(i -> i.setInsegnante(null));
+        }
+        if (insegnanteCorsos != null) {
+            insegnanteCorsos.forEach(i -> i.setInsegnante(this));
+        }
+        this.insegnanteCorsos = insegnanteCorsos;
+    }
+
+    public Insegnante insegnanteCorsos(Set<InsegnanteCorso> insegnanteCorsos) {
+        this.setInsegnanteCorsos(insegnanteCorsos);
+        return this;
+    }
+
+    public Insegnante addInsegnanteCorso(InsegnanteCorso insegnanteCorso) {
+        this.insegnanteCorsos.add(insegnanteCorso);
+        insegnanteCorso.setInsegnante(this);
+        return this;
+    }
+
+    public Insegnante removeInsegnanteCorso(InsegnanteCorso insegnanteCorso) {
+        this.insegnanteCorsos.remove(insegnanteCorso);
+        insegnanteCorso.setInsegnante(null);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

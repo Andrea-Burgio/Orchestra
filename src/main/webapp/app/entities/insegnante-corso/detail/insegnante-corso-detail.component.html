@@ -19,6 +19,14 @@
           <dd>
             <span>{{ insegnanteCorso()!.mese }}</span>
           </dd>
+          <dt><span>Insegnante</span></dt>
+          <dd>
+            @if (insegnanteCorso()!.insegnante) {
+              <div>
+                <a [routerLink]="['/insegnante', insegnanteCorso()!.insegnante?.id, 'view']">{{ insegnanteCorso()!.insegnante?.nome }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

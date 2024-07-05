@@ -56,5 +56,9 @@ public class InsegnanteCorsoAsserts {
      * @param expected the expected entity
      * @param actual the actual entity
      */
-    public static void assertInsegnanteCorsoUpdatableRelationshipsEquals(InsegnanteCorso expected, InsegnanteCorso actual) {}
+    public static void assertInsegnanteCorsoUpdatableRelationshipsEquals(InsegnanteCorso expected, InsegnanteCorso actual) {
+        assertThat(expected)
+            .as("Verify InsegnanteCorso relationships")
+            .satisfies(e -> assertThat(e.getInsegnante()).as("check insegnante").isEqualTo(actual.getInsegnante()));
+    }
 }

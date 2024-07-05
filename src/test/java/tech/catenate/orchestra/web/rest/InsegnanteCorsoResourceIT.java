@@ -2,6 +2,7 @@ package tech.catenate.orchestra.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static tech.catenate.orchestra.domain.InsegnanteCorsoAsserts.*;
@@ -9,13 +10,19 @@ import static tech.catenate.orchestra.web.rest.TestUtil.createUpdateProxyForBean
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,11 +30,13 @@ import org.springframework.transaction.annotation.Transactional;
 import tech.catenate.orchestra.IntegrationTest;
 import tech.catenate.orchestra.domain.InsegnanteCorso;
 import tech.catenate.orchestra.repository.InsegnanteCorsoRepository;
+import tech.catenate.orchestra.service.InsegnanteCorsoService;
 
 /**
  * Integration tests for the {@link InsegnanteCorsoResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class InsegnanteCorsoResourceIT {
@@ -46,6 +55,12 @@ class InsegnanteCorsoResourceIT {
 
     @Autowired
     private InsegnanteCorsoRepository insegnanteCorsoRepository;
+
+    @Mock
+    private InsegnanteCorsoRepository insegnanteCorsoRepositoryMock;
+
+    @Mock
+    private InsegnanteCorsoService insegnanteCorsoServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -144,6 +159,23 @@ class InsegnanteCorsoResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(insegnanteCorso.getId().intValue())))
             .andExpect(jsonPath("$.[*].mese").value(hasItem(DEFAULT_MESE)));
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllInsegnanteCorsosWithEagerRelationshipsIsEnabled() throws Exception {
+        when(insegnanteCorsoServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restInsegnanteCorsoMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(insegnanteCorsoServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllInsegnanteCorsosWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(insegnanteCorsoServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restInsegnanteCorsoMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(insegnanteCorsoRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
