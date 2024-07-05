@@ -36,6 +36,10 @@ public class Concerto implements Serializable {
     @JsonIgnoreProperties(value = { "concerto" }, allowSetters = true)
     private Set<Foto> fotos = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "concerto")
+    @JsonIgnoreProperties(value = { "concerto" }, allowSetters = true)
+    private Set<Filmato> filmatoes = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -118,6 +122,37 @@ public class Concerto implements Serializable {
     public Concerto removeFoto(Foto foto) {
         this.fotos.remove(foto);
         foto.setConcerto(null);
+        return this;
+    }
+
+    public Set<Filmato> getFilmatoes() {
+        return this.filmatoes;
+    }
+
+    public void setFilmatoes(Set<Filmato> filmatoes) {
+        if (this.filmatoes != null) {
+            this.filmatoes.forEach(i -> i.setConcerto(null));
+        }
+        if (filmatoes != null) {
+            filmatoes.forEach(i -> i.setConcerto(this));
+        }
+        this.filmatoes = filmatoes;
+    }
+
+    public Concerto filmatoes(Set<Filmato> filmatoes) {
+        this.setFilmatoes(filmatoes);
+        return this;
+    }
+
+    public Concerto addFilmato(Filmato filmato) {
+        this.filmatoes.add(filmato);
+        filmato.setConcerto(this);
+        return this;
+    }
+
+    public Concerto removeFilmato(Filmato filmato) {
+        this.filmatoes.remove(filmato);
+        filmato.setConcerto(null);
         return this;
     }
 

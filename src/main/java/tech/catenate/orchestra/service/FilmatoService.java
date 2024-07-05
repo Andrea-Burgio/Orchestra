@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.catenate.orchestra.domain.Filmato;
@@ -85,6 +87,15 @@ public class FilmatoService {
     }
 
     /**
+     * Get all the filmatoes with eager load of many-to-many relationships.
+     *
+     * @return the list of entities.
+     */
+    public Page<Filmato> findAllWithEagerRelationships(Pageable pageable) {
+        return filmatoRepository.findAllWithEagerRelationships(pageable);
+    }
+
+    /**
      * Get one filmato by id.
      *
      * @param id the id of the entity.
@@ -93,7 +104,7 @@ public class FilmatoService {
     @Transactional(readOnly = true)
     public Optional<Filmato> findOne(Long id) {
         log.debug("Request to get Filmato : {}", id);
-        return filmatoRepository.findById(id);
+        return filmatoRepository.findOneWithEagerRelationships(id);
     }
 
     /**
@@ -104,5 +115,16 @@ public class FilmatoService {
     public void delete(Long id) {
         log.debug("Request to delete Filmato : {}", id);
         filmatoRepository.deleteById(id);
+    }
+
+    /**
+     * Get all the Filmatoes along with their associated Concerto entities.
+     *
+     * @return the list of Filmatoes entities with their associated Concerto entities.
+     */
+    @Transactional(readOnly = true)
+    public List<Filmato> findAllWithToOneRelationships() {
+        log.debug("Request to get all Concertos");
+        return filmatoRepository.findAllWithToOneRelationships();
     }
 }

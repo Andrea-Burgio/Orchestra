@@ -2,6 +2,7 @@ package tech.catenate.orchestra.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static tech.catenate.orchestra.domain.FilmatoAsserts.*;
@@ -9,14 +10,20 @@ import static tech.catenate.orchestra.web.rest.TestUtil.createUpdateProxyForBean
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,11 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 import tech.catenate.orchestra.IntegrationTest;
 import tech.catenate.orchestra.domain.Filmato;
 import tech.catenate.orchestra.repository.FilmatoRepository;
+import tech.catenate.orchestra.service.FilmatoService;
 
 /**
  * Integration tests for the {@link FilmatoResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class FilmatoResourceIT {
@@ -52,6 +61,12 @@ class FilmatoResourceIT {
 
     @Autowired
     private FilmatoRepository filmatoRepository;
+
+    @Mock
+    private FilmatoRepository filmatoRepositoryMock;
+
+    @Mock
+    private FilmatoService filmatoServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -152,6 +167,23 @@ class FilmatoResourceIT {
             .andExpect(jsonPath("$.[*].blobContentType").value(hasItem(DEFAULT_BLOB_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].blob").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_BLOB))))
             .andExpect(jsonPath("$.[*].nome_file").value(hasItem(DEFAULT_NOME_FILE)));
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllFilmatoesWithEagerRelationshipsIsEnabled() throws Exception {
+        when(filmatoServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restFilmatoMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(filmatoServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllFilmatoesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(filmatoServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restFilmatoMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(filmatoRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test

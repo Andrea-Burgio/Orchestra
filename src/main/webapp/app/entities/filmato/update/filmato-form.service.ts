@@ -21,6 +21,7 @@ type FilmatoFormGroupContent = {
   blob: FormControl<IFilmato['blob']>;
   blobContentType: FormControl<IFilmato['blobContentType']>;
   nome_file: FormControl<IFilmato['nome_file']>;
+  concerto: FormControl<IFilmato['concerto']>;
 };
 
 export type FilmatoFormGroup = FormGroup<FilmatoFormGroupContent>;
@@ -43,6 +44,7 @@ export class FilmatoFormService {
       blob: new FormControl(filmatoRawValue.blob),
       blobContentType: new FormControl(filmatoRawValue.blobContentType),
       nome_file: new FormControl(filmatoRawValue.nome_file),
+      concerto: new FormControl(filmatoRawValue.concerto),
     });
   }
 

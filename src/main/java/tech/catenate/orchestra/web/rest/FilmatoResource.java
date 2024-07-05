@@ -129,12 +129,13 @@ public class FilmatoResource {
     /**
      * {@code GET  /filmatoes} : get all the filmatoes.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of filmatoes in body.
      */
     @GetMapping("")
-    public List<Filmato> getAllFilmatoes() {
+    public List<Filmato> getAllFilmatoes(@RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload) {
         log.debug("REST request to get all Filmatoes");
-        return filmatoService.findAll();
+        return filmatoService.findAllWithToOneRelationships();
     }
 
     /**

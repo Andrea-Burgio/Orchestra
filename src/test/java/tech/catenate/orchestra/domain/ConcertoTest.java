@@ -3,6 +3,7 @@ package tech.catenate.orchestra.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tech.catenate.orchestra.domain.ConcertoTestSamples.*;
 import static tech.catenate.orchestra.domain.CorsoTestSamples.*;
+import static tech.catenate.orchestra.domain.FilmatoTestSamples.*;
 import static tech.catenate.orchestra.domain.FotoTestSamples.*;
 
 import java.util.HashSet;
@@ -58,5 +59,27 @@ class ConcertoTest {
         concerto.setFotos(new HashSet<>());
         assertThat(concerto.getFotos()).doesNotContain(fotoBack);
         assertThat(fotoBack.getConcerto()).isNull();
+    }
+
+    @Test
+    void filmatoTest() {
+        Concerto concerto = getConcertoRandomSampleGenerator();
+        Filmato filmatoBack = getFilmatoRandomSampleGenerator();
+
+        concerto.addFilmato(filmatoBack);
+        assertThat(concerto.getFilmatoes()).containsOnly(filmatoBack);
+        assertThat(filmatoBack.getConcerto()).isEqualTo(concerto);
+
+        concerto.removeFilmato(filmatoBack);
+        assertThat(concerto.getFilmatoes()).doesNotContain(filmatoBack);
+        assertThat(filmatoBack.getConcerto()).isNull();
+
+        concerto.filmatoes(new HashSet<>(Set.of(filmatoBack)));
+        assertThat(concerto.getFilmatoes()).containsOnly(filmatoBack);
+        assertThat(filmatoBack.getConcerto()).isEqualTo(concerto);
+
+        concerto.setFilmatoes(new HashSet<>());
+        assertThat(concerto.getFilmatoes()).doesNotContain(filmatoBack);
+        assertThat(filmatoBack.getConcerto()).isNull();
     }
 }

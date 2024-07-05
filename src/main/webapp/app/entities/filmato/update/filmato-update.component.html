@@ -40,6 +40,23 @@
           <label class="form-label" for="field_nome_file">Nome File</label>
           <input type="text" class="form-control" name="nome_file" id="field_nome_file" data-cy="nome_file" formControlName="nome_file" />
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_concerto">Concerto</label>
+          <select
+            class="form-control"
+            id="field_concerto"
+            data-cy="concerto"
+            name="concerto"
+            formControlName="concerto"
+            [compareWith]="compareConcerto"
+          >
+            <option [ngValue]="null"></option>
+            @for (concertoOption of concertosSharedCollection; track $index) {
+              <option [ngValue]="concertoOption">{{ concertoOption.nome }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

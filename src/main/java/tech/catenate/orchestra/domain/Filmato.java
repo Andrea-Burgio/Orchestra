@@ -1,5 +1,6 @@
 package tech.catenate.orchestra.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
 
@@ -27,6 +28,10 @@ public class Filmato implements Serializable {
 
     @Column(name = "nome_file")
     private String nome_file;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "corso", "fotos", "filmatoes" }, allowSetters = true)
+    private Concerto concerto;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -80,6 +85,19 @@ public class Filmato implements Serializable {
 
     public void setNome_file(String nome_file) {
         this.nome_file = nome_file;
+    }
+
+    public Concerto getConcerto() {
+        return this.concerto;
+    }
+
+    public void setConcerto(Concerto concerto) {
+        this.concerto = concerto;
+    }
+
+    public Filmato concerto(Concerto concerto) {
+        this.setConcerto(concerto);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

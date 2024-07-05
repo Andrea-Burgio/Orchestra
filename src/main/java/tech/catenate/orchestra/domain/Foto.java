@@ -30,7 +30,7 @@ public class Foto implements Serializable {
     private String nome_file;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "corso", "fotos" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "corso", "fotos", "filmatoes" }, allowSetters = true)
     private Concerto concerto;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

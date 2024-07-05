@@ -118,9 +118,9 @@ public class FotoService {
     }
 
     /**
-     * Get all the InsegnanteCorsos along with their associated Insegnante and Corso entities.
+     * Get all the Fotos along with their associated Concerto entities.
      *
-     * @return the list of InsegnanteCorso entities with their associated Insegnante and Corso entities.
+     * @return the list of Fotos entities with their associated Concerto entities.
      */
     @Transactional(readOnly = true)
     public List<Foto> findAllWithToOneRelationships() {

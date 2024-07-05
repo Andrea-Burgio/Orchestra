@@ -28,6 +28,14 @@
           <dd>
             <span>{{ filmato()!.nome_file }}</span>
           </dd>
+          <dt><span>Concerto</span></dt>
+          <dd>
+            @if (filmato()!.concerto) {
+              <div>
+                <a [routerLink]="['/concerto', filmato()!.concerto?.id, 'view']">{{ filmato()!.concerto?.nome }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

@@ -58,5 +58,9 @@ public class FilmatoAsserts {
      * @param expected the expected entity
      * @param actual the actual entity
      */
-    public static void assertFilmatoUpdatableRelationshipsEquals(Filmato expected, Filmato actual) {}
+    public static void assertFilmatoUpdatableRelationshipsEquals(Filmato expected, Filmato actual) {
+        assertThat(expected)
+            .as("Verify Filmato relationships")
+            .satisfies(e -> assertThat(e.getConcerto()).as("check concerto").isEqualTo(actual.getConcerto()));
+    }
 }

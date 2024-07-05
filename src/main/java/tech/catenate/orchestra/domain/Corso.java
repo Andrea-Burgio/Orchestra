@@ -28,7 +28,7 @@ public class Corso implements Serializable {
     private String nome;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "corso")
-    @JsonIgnoreProperties(value = { "corso", "fotos" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "corso", "fotos", "filmatoes" }, allowSetters = true)
     private Set<Concerto> concertos = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "corso")

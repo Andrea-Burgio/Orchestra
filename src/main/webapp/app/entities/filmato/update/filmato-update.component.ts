@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,6 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertError } from 'app/shared/alert/alert-error.model';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
 import { DataUtils, FileLoadError } from 'app/core/util/data-util.service';
+import { IConcerto } from 'app/entities/concerto/concerto.model';
+import { ConcertoService } from 'app/entities/concerto/service/concerto.service';
 import { FilmatoService } from '../service/filmato.service';
 import { IFilmato } from '../filmato.model';
 import { FilmatoFormService, FilmatoFormGroup } from './filmato-form.service';
@@ -24,14 +26,19 @@ export class FilmatoUpdateComponent implements OnInit {
   isSaving = false;
   filmato: IFilmato | null = null;
 
+  concertosSharedCollection: IConcerto[] = [];
+
   protected dataUtils = inject(DataUtils);
   protected eventManager = inject(EventManager);
   protected filmatoService = inject(FilmatoService);
   protected filmatoFormService = inject(FilmatoFormService);
+  protected concertoService = inject(ConcertoService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: FilmatoFormGroup = this.filmatoFormService.createFilmatoFormGroup();
+
+  compareConcerto = (o1: IConcerto | null, o2: IConcerto | null): boolean => this.concertoService.compareConcerto(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ filmato }) => {
@@ -39,6 +46,8 @@ export class FilmatoUpdateComponent implements OnInit {
       if (filmato) {
         this.updateForm(filmato);
       }
+
+      this.loadRelationshipsOptions();
     });
   }
 
@@ -93,5 +102,22 @@ export class FilmatoUpdateComponent implements OnInit {
   protected updateForm(filmato: IFilmato): void {
     this.filmato = filmato;
     this.filmatoFormService.resetForm(this.editForm, filmato);
+
+    this.concertosSharedCollection = this.concertoService.addConcertoToCollectionIfMissing<IConcerto>(
+      this.concertosSharedCollection,
+      filmato.concerto,
+    );
+  }
+
+  protected loadRelationshipsOptions(): void {
+    this.concertoService
+      .query()
+      .pipe(map((res: HttpResponse<IConcerto[]>) => res.body ?? []))
+      .pipe(
+        map((concertos: IConcerto[]) =>
+          this.concertoService.addConcertoToCollectionIfMissing<IConcerto>(concertos, this.filmato?.concerto),
+        ),
+      )
+      .subscribe((concertos: IConcerto[]) => (this.concertosSharedCollection = concertos));
   }
 }
