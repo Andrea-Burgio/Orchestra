@@ -9,8 +9,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IInsegnante } from 'app/entities/insegnante/insegnante.model';
 import { InsegnanteService } from 'app/entities/insegnante/service/insegnante.service';
-import { IInsegnanteCorso } from '../insegnante-corso.model';
+import { ICorso } from 'app/entities/corso/corso.model';
+import { CorsoService } from 'app/entities/corso/service/corso.service';
 import { InsegnanteCorsoService } from '../service/insegnante-corso.service';
+import { IInsegnanteCorso } from '../insegnante-corso.model';
 import { InsegnanteCorsoFormService, InsegnanteCorsoFormGroup } from './insegnante-corso-form.service';
 
 @Component({
@@ -24,16 +26,20 @@ export class InsegnanteCorsoUpdateComponent implements OnInit {
   insegnanteCorso: IInsegnanteCorso | null = null;
 
   insegnantesSharedCollection: IInsegnante[] = [];
+  corsosSharedCollection: ICorso[] = [];
 
   protected insegnanteCorsoService = inject(InsegnanteCorsoService);
   protected insegnanteCorsoFormService = inject(InsegnanteCorsoFormService);
   protected insegnanteService = inject(InsegnanteService);
+  protected corsoService = inject(CorsoService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: InsegnanteCorsoFormGroup = this.insegnanteCorsoFormService.createInsegnanteCorsoFormGroup();
 
   compareInsegnante = (o1: IInsegnante | null, o2: IInsegnante | null): boolean => this.insegnanteService.compareInsegnante(o1, o2);
+
+  compareCorso = (o1: ICorso | null, o2: ICorso | null): boolean => this.corsoService.compareCorso(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ insegnanteCorso }) => {
@@ -87,6 +93,10 @@ export class InsegnanteCorsoUpdateComponent implements OnInit {
       this.insegnantesSharedCollection,
       insegnanteCorso.insegnante,
     );
+    this.corsosSharedCollection = this.corsoService.addCorsoToCollectionIfMissing<ICorso>(
+      this.corsosSharedCollection,
+      insegnanteCorso.corso,
+    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -99,5 +109,11 @@ export class InsegnanteCorsoUpdateComponent implements OnInit {
         ),
       )
       .subscribe((insegnantes: IInsegnante[]) => (this.insegnantesSharedCollection = insegnantes));
+
+    this.corsoService
+      .query()
+      .pipe(map((res: HttpResponse<ICorso[]>) => res.body ?? []))
+      .pipe(map((corsos: ICorso[]) => this.corsoService.addCorsoToCollectionIfMissing<ICorso>(corsos, this.insegnanteCorso?.corso)))
+      .subscribe((corsos: ICorso[]) => (this.corsosSharedCollection = corsos));
   }
 }

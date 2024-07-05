@@ -7,8 +7,10 @@ import { of, Subject, from } from 'rxjs';
 
 import { IInsegnante } from 'app/entities/insegnante/insegnante.model';
 import { InsegnanteService } from 'app/entities/insegnante/service/insegnante.service';
-import { InsegnanteCorsoService } from '../service/insegnante-corso.service';
+import { ICorso } from 'app/entities/corso/corso.model';
+import { CorsoService } from 'app/entities/corso/service/corso.service';
 import { IInsegnanteCorso } from '../insegnante-corso.model';
+import { InsegnanteCorsoService } from '../service/insegnante-corso.service';
 import { InsegnanteCorsoFormService } from './insegnante-corso-form.service';
 
 import { InsegnanteCorsoUpdateComponent } from './insegnante-corso-update.component';
@@ -20,6 +22,7 @@ describe('InsegnanteCorso Management Update Component', () => {
   let insegnanteCorsoFormService: InsegnanteCorsoFormService;
   let insegnanteCorsoService: InsegnanteCorsoService;
   let insegnanteService: InsegnanteService;
+  let corsoService: CorsoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -42,6 +45,7 @@ describe('InsegnanteCorso Management Update Component', () => {
     insegnanteCorsoFormService = TestBed.inject(InsegnanteCorsoFormService);
     insegnanteCorsoService = TestBed.inject(InsegnanteCorsoService);
     insegnanteService = TestBed.inject(InsegnanteService);
+    corsoService = TestBed.inject(CorsoService);
 
     comp = fixture.componentInstance;
   });
@@ -69,15 +73,40 @@ describe('InsegnanteCorso Management Update Component', () => {
       expect(comp.insegnantesSharedCollection).toEqual(expectedCollection);
     });
 
+    it('Should call Corso query and add missing value', () => {
+      const insegnanteCorso: IInsegnanteCorso = { id: 456 };
+      const corso: ICorso = { id: 13168 };
+      insegnanteCorso.corso = corso;
+
+      const corsoCollection: ICorso[] = [{ id: 21297 }];
+      jest.spyOn(corsoService, 'query').mockReturnValue(of(new HttpResponse({ body: corsoCollection })));
+      const additionalCorsos = [corso];
+      const expectedCollection: ICorso[] = [...additionalCorsos, ...corsoCollection];
+      jest.spyOn(corsoService, 'addCorsoToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ insegnanteCorso });
+      comp.ngOnInit();
+
+      expect(corsoService.query).toHaveBeenCalled();
+      expect(corsoService.addCorsoToCollectionIfMissing).toHaveBeenCalledWith(
+        corsoCollection,
+        ...additionalCorsos.map(expect.objectContaining),
+      );
+      expect(comp.corsosSharedCollection).toEqual(expectedCollection);
+    });
+
     it('Should update editForm', () => {
       const insegnanteCorso: IInsegnanteCorso = { id: 456 };
       const insegnante: IInsegnante = { id: 19656 };
       insegnanteCorso.insegnante = insegnante;
+      const corso: ICorso = { id: 2001 };
+      insegnanteCorso.corso = corso;
 
       activatedRoute.data = of({ insegnanteCorso });
       comp.ngOnInit();
 
       expect(comp.insegnantesSharedCollection).toContain(insegnante);
+      expect(comp.corsosSharedCollection).toContain(corso);
       expect(comp.insegnanteCorso).toEqual(insegnanteCorso);
     });
   });
@@ -158,6 +187,16 @@ describe('InsegnanteCorso Management Update Component', () => {
         jest.spyOn(insegnanteService, 'compareInsegnante');
         comp.compareInsegnante(entity, entity2);
         expect(insegnanteService.compareInsegnante).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareCorso', () => {
+      it('Should forward to corsoService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(corsoService, 'compareCorso');
+        comp.compareCorso(entity, entity2);
+        expect(corsoService.compareCorso).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

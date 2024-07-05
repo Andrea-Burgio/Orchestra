@@ -55,6 +55,12 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="corso.nome">
+              <div class="d-flex">
+                <span>Corso</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -69,6 +75,13 @@
                 @if (insegnanteCorso.insegnante) {
                   <div>
                     <a [routerLink]="['/insegnante', insegnanteCorso.insegnante.id, 'view']">{{ insegnanteCorso.insegnante.nome }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (insegnanteCorso.corso) {
+                  <div>
+                    <a [routerLink]="['/corso', insegnanteCorso.corso.id, 'view']">{{ insegnanteCorso.corso.nome }}</a>
                   </div>
                 }
               </td>

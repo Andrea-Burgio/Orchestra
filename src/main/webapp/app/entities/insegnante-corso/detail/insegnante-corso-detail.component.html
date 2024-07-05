@@ -27,6 +27,14 @@
               </div>
             }
           </dd>
+          <dt><span>Corso</span></dt>
+          <dd>
+            @if (insegnanteCorso()!.corso) {
+              <div>
+                <a [routerLink]="['/corso', insegnanteCorso()!.corso?.id, 'view']">{{ insegnanteCorso()!.corso?.nome }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

@@ -27,19 +27,18 @@ public interface InsegnanteCorsoRepository extends JpaRepository<InsegnanteCorso
     }
 
     @Query(
-        value = "select insegnanteCorso from InsegnanteCorso insegnanteCorso left join fetch insegnanteCorso.insegnante",
+        value = "select insegnanteCorso from InsegnanteCorso insegnanteCorso left join fetch insegnanteCorso.insegnante left join fetch insegnanteCorso.corso",
         countQuery = "select count(insegnanteCorso) from InsegnanteCorso insegnanteCorso"
     )
     Page<InsegnanteCorso> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select insegnanteCorso from InsegnanteCorso insegnanteCorso left join fetch insegnanteCorso.insegnante")
+    @Query(
+        "select insegnanteCorso from InsegnanteCorso insegnanteCorso left join fetch insegnanteCorso.insegnante left join fetch insegnanteCorso.corso"
+    )
     List<InsegnanteCorso> findAllWithToOneRelationships();
 
     @Query(
-        "select insegnanteCorso from InsegnanteCorso insegnanteCorso left join fetch insegnanteCorso.insegnante where insegnanteCorso.id =:id"
+        "select insegnanteCorso from InsegnanteCorso insegnanteCorso left join fetch insegnanteCorso.insegnante left join fetch insegnanteCorso.corso where insegnanteCorso.id =:id"
     )
     Optional<InsegnanteCorso> findOneWithToOneRelationships(@Param("id") Long id);
-
-    @Query("select i from InsegnanteCorso i left join fetch i.insegnante")
-    List<InsegnanteCorso> findAll();
 }

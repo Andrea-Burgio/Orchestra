@@ -22,6 +22,7 @@ describe('InsegnanteCorso Form Service', () => {
             id: expect.any(Object),
             mese: expect.any(Object),
             insegnante: expect.any(Object),
+            corso: expect.any(Object),
           }),
         );
       });
@@ -34,6 +35,7 @@ describe('InsegnanteCorso Form Service', () => {
             id: expect.any(Object),
             mese: expect.any(Object),
             insegnante: expect.any(Object),
+            corso: expect.any(Object),
           }),
         );
       });

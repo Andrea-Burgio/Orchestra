@@ -1,6 +1,7 @@
 package tech.catenate.orchestra.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static tech.catenate.orchestra.domain.CorsoTestSamples.*;
 import static tech.catenate.orchestra.domain.InsegnanteCorsoTestSamples.*;
 import static tech.catenate.orchestra.domain.InsegnanteTestSamples.*;
 
@@ -33,5 +34,17 @@ class InsegnanteCorsoTest {
 
         insegnanteCorso.insegnante(null);
         assertThat(insegnanteCorso.getInsegnante()).isNull();
+    }
+
+    @Test
+    void corsoTest() {
+        InsegnanteCorso insegnanteCorso = getInsegnanteCorsoRandomSampleGenerator();
+        Corso corsoBack = getCorsoRandomSampleGenerator();
+
+        insegnanteCorso.setCorso(corsoBack);
+        assertThat(insegnanteCorso.getCorso()).isEqualTo(corsoBack);
+
+        insegnanteCorso.corso(null);
+        assertThat(insegnanteCorso.getCorso()).isNull();
     }
 }

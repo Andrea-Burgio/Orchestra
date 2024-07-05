@@ -2,7 +2,10 @@ package tech.catenate.orchestra.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static tech.catenate.orchestra.domain.CorsoTestSamples.*;
+import static tech.catenate.orchestra.domain.InsegnanteCorsoTestSamples.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import tech.catenate.orchestra.web.rest.TestUtil;
 
@@ -20,5 +23,27 @@ class CorsoTest {
 
         corso2 = getCorsoSample2();
         assertThat(corso1).isNotEqualTo(corso2);
+    }
+
+    @Test
+    void insegnanteCorsoTest() {
+        Corso corso = getCorsoRandomSampleGenerator();
+        InsegnanteCorso insegnanteCorsoBack = getInsegnanteCorsoRandomSampleGenerator();
+
+        corso.addInsegnanteCorso(insegnanteCorsoBack);
+        assertThat(corso.getInsegnanteCorsos()).containsOnly(insegnanteCorsoBack);
+        assertThat(insegnanteCorsoBack.getCorso()).isEqualTo(corso);
+
+        corso.removeInsegnanteCorso(insegnanteCorsoBack);
+        assertThat(corso.getInsegnanteCorsos()).doesNotContain(insegnanteCorsoBack);
+        assertThat(insegnanteCorsoBack.getCorso()).isNull();
+
+        corso.insegnanteCorsos(new HashSet<>(Set.of(insegnanteCorsoBack)));
+        assertThat(corso.getInsegnanteCorsos()).containsOnly(insegnanteCorsoBack);
+        assertThat(insegnanteCorsoBack.getCorso()).isEqualTo(corso);
+
+        corso.setInsegnanteCorsos(new HashSet<>());
+        assertThat(corso.getInsegnanteCorsos()).doesNotContain(insegnanteCorsoBack);
+        assertThat(insegnanteCorsoBack.getCorso()).isNull();
     }
 }

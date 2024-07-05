@@ -26,6 +26,10 @@ public class InsegnanteCorso implements Serializable {
     @JsonIgnoreProperties(value = { "insegnanteCorsos" }, allowSetters = true)
     private Insegnante insegnante;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "insegnanteCorsos" }, allowSetters = true)
+    private Corso corso;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -64,6 +68,19 @@ public class InsegnanteCorso implements Serializable {
 
     public InsegnanteCorso insegnante(Insegnante insegnante) {
         this.setInsegnante(insegnante);
+        return this;
+    }
+
+    public Corso getCorso() {
+        return this.corso;
+    }
+
+    public void setCorso(Corso corso) {
+        this.corso = corso;
+    }
+
+    public InsegnanteCorso corso(Corso corso) {
+        this.setCorso(corso);
         return this;
     }
 

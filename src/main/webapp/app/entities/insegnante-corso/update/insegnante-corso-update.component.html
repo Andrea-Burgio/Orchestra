@@ -34,6 +34,16 @@
             }
           </select>
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_corso">Corso</label>
+          <select class="form-control" id="field_corso" data-cy="corso" name="corso" formControlName="corso" [compareWith]="compareCorso">
+            <option [ngValue]="null"></option>
+            @for (corsoOption of corsosSharedCollection; track $index) {
+              <option [ngValue]="corsoOption">{{ corsoOption.nome }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

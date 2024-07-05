@@ -139,7 +139,7 @@ public class InsegnanteCorsoResource {
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
         log.debug("REST request to get all InsegnanteCorsos");
-        return insegnanteCorsoService.findAll();
+        return insegnanteCorsoService.findAllWithToOneRelationships();
     }
 
     /**

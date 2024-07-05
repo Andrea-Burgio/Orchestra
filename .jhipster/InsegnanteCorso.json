@@ -21,6 +21,14 @@
       "relationshipName": "insegnante",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "nome",
+      "otherEntityName": "corso",
+      "otherEntityRelationshipName": "insegnanteCorso",
+      "relationshipName": "corso",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
     }
   ],
   "searchEngine": "no",

@@ -59,6 +59,7 @@ public class InsegnanteCorsoAsserts {
     public static void assertInsegnanteCorsoUpdatableRelationshipsEquals(InsegnanteCorso expected, InsegnanteCorso actual) {
         assertThat(expected)
             .as("Verify InsegnanteCorso relationships")
-            .satisfies(e -> assertThat(e.getInsegnante()).as("check insegnante").isEqualTo(actual.getInsegnante()));
+            .satisfies(e -> assertThat(e.getInsegnante()).as("check insegnante").isEqualTo(actual.getInsegnante()))
+            .satisfies(e -> assertThat(e.getCorso()).as("check corso").isEqualTo(actual.getCorso()));
     }
 }
