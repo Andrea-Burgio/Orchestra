@@ -292,6 +292,8 @@ class InsegnanteCorsoResourceIT {
         InsegnanteCorso partialUpdatedInsegnanteCorso = new InsegnanteCorso();
         partialUpdatedInsegnanteCorso.setId(insegnanteCorso.getId());
 
+        partialUpdatedInsegnanteCorso.mese(UPDATED_MESE);
+
         restInsegnanteCorsoMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedInsegnanteCorso.getId())

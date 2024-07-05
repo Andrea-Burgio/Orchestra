@@ -266,6 +266,8 @@ class FilmatoResourceIT {
         Filmato partialUpdatedFilmato = new Filmato();
         partialUpdatedFilmato.setId(filmato.getId());
 
+        partialUpdatedFilmato.blob(UPDATED_BLOB).blobContentType(UPDATED_BLOB_CONTENT_TYPE).nome_file(UPDATED_NOME_FILE);
+
         restFilmatoMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedFilmato.getId())

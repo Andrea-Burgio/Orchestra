@@ -1,0 +1,23 @@
+{
+  "annotations": {
+    "changelogDate": "20240705143855"
+  },
+  "dto": "no",
+  "fields": [
+    {
+      "fieldName": "mese",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "pagato",
+      "fieldType": "Boolean"
+    }
+  ],
+  "jpaMetamodelFiltering": false,
+  "name": "ClienteCorso",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

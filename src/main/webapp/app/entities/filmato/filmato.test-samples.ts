@@ -1,19 +1,18 @@
 import { IFilmato, NewFilmato } from './filmato.model';
 
 export const sampleWithRequiredData: IFilmato = {
-  id: 11363,
+  id: 24971,
 };
 
 export const sampleWithPartialData: IFilmato = {
-  id: 21003,
-  nome_file: 'pro whoa',
+  id: 5553,
 };
 
 export const sampleWithFullData: IFilmato = {
-  id: 20433,
+  id: 29800,
   blob: '../fake-data/blob/hipster.png',
   blobContentType: 'unknown',
-  nome_file: 'dazzling sweetly muddy',
+  nome_file: 'truthful supposing ack',
 };
 
 export const sampleWithNewData: NewFilmato = {

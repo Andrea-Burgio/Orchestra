@@ -265,8 +265,6 @@ class ConcertoResourceIT {
         Concerto partialUpdatedConcerto = new Concerto();
         partialUpdatedConcerto.setId(concerto.getId());
 
-        partialUpdatedConcerto.data(UPDATED_DATA);
-
         restConcertoMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedConcerto.getId())
