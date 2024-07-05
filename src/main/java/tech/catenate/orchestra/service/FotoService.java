@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.catenate.orchestra.domain.Foto;
@@ -85,6 +87,15 @@ public class FotoService {
     }
 
     /**
+     * Get all the fotos with eager load of many-to-many relationships.
+     *
+     * @return the list of entities.
+     */
+    public Page<Foto> findAllWithEagerRelationships(Pageable pageable) {
+        return fotoRepository.findAllWithEagerRelationships(pageable);
+    }
+
+    /**
      * Get one foto by id.
      *
      * @param id the id of the entity.
@@ -93,7 +104,7 @@ public class FotoService {
     @Transactional(readOnly = true)
     public Optional<Foto> findOne(Long id) {
         log.debug("Request to get Foto : {}", id);
-        return fotoRepository.findById(id);
+        return fotoRepository.findOneWithEagerRelationships(id);
     }
 
     /**
@@ -104,5 +115,16 @@ public class FotoService {
     public void delete(Long id) {
         log.debug("Request to delete Foto : {}", id);
         fotoRepository.deleteById(id);
+    }
+
+    /**
+     * Get all the InsegnanteCorsos along with their associated Insegnante and Corso entities.
+     *
+     * @return the list of InsegnanteCorso entities with their associated Insegnante and Corso entities.
+     */
+    @Transactional(readOnly = true)
+    public List<Foto> findAllWithToOneRelationships() {
+        log.debug("Request to get all Fotos");
+        return fotoRepository.findAllWithToOneRelationships();
     }
 }

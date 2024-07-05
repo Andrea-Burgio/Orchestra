@@ -5,6 +5,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
 
+import { IConcerto } from 'app/entities/concerto/concerto.model';
+import { ConcertoService } from 'app/entities/concerto/service/concerto.service';
 import { FotoService } from '../service/foto.service';
 import { IFoto } from '../foto.model';
 import { FotoFormService } from './foto-form.service';
@@ -17,6 +19,7 @@ describe('Foto Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let fotoFormService: FotoFormService;
   let fotoService: FotoService;
+  let concertoService: ConcertoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +41,43 @@ describe('Foto Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     fotoFormService = TestBed.inject(FotoFormService);
     fotoService = TestBed.inject(FotoService);
+    concertoService = TestBed.inject(ConcertoService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
+    it('Should call Concerto query and add missing value', () => {
       const foto: IFoto = { id: 456 };
+      const concerto: IConcerto = { id: 16867 };
+      foto.concerto = concerto;
+
+      const concertoCollection: IConcerto[] = [{ id: 7103 }];
+      jest.spyOn(concertoService, 'query').mockReturnValue(of(new HttpResponse({ body: concertoCollection })));
+      const additionalConcertos = [concerto];
+      const expectedCollection: IConcerto[] = [...additionalConcertos, ...concertoCollection];
+      jest.spyOn(concertoService, 'addConcertoToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ foto });
       comp.ngOnInit();
 
+      expect(concertoService.query).toHaveBeenCalled();
+      expect(concertoService.addConcertoToCollectionIfMissing).toHaveBeenCalledWith(
+        concertoCollection,
+        ...additionalConcertos.map(expect.objectContaining),
+      );
+      expect(comp.concertosSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const foto: IFoto = { id: 456 };
+      const concerto: IConcerto = { id: 15389 };
+      foto.concerto = concerto;
+
+      activatedRoute.data = of({ foto });
+      comp.ngOnInit();
+
+      expect(comp.concertosSharedCollection).toContain(concerto);
       expect(comp.foto).toEqual(foto);
     });
   });
@@ -118,6 +147,18 @@ describe('Foto Management Update Component', () => {
       expect(fotoService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareConcerto', () => {
+      it('Should forward to concertoService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(concertoService, 'compareConcerto');
+        comp.compareConcerto(entity, entity2);
+        expect(concertoService.compareConcerto).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

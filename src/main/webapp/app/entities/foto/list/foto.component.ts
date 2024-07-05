@@ -111,6 +111,7 @@ export class FotoComponent implements OnInit {
   protected queryBackend(): Observable<EntityArrayResponseType> {
     this.isLoading = true;
     const queryObject: any = {
+      eagerload: true,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
     return this.fotoService.query(queryObject).pipe(tap(() => (this.isLoading = false)));

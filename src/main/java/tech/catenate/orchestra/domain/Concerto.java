@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Concerto.
@@ -29,6 +31,10 @@ public class Concerto implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "concertos", "insegnanteCorsos", "clienteCorsos" }, allowSetters = true)
     private Corso corso;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "concerto")
+    @JsonIgnoreProperties(value = { "concerto" }, allowSetters = true)
+    private Set<Foto> fotos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -81,6 +87,37 @@ public class Concerto implements Serializable {
 
     public Concerto corso(Corso corso) {
         this.setCorso(corso);
+        return this;
+    }
+
+    public Set<Foto> getFotos() {
+        return this.fotos;
+    }
+
+    public void setFotos(Set<Foto> fotos) {
+        if (this.fotos != null) {
+            this.fotos.forEach(i -> i.setConcerto(null));
+        }
+        if (fotos != null) {
+            fotos.forEach(i -> i.setConcerto(this));
+        }
+        this.fotos = fotos;
+    }
+
+    public Concerto fotos(Set<Foto> fotos) {
+        this.setFotos(fotos);
+        return this;
+    }
+
+    public Concerto addFoto(Foto foto) {
+        this.fotos.add(foto);
+        foto.setConcerto(this);
+        return this;
+    }
+
+    public Concerto removeFoto(Foto foto) {
+        this.fotos.remove(foto);
+        foto.setConcerto(null);
         return this;
     }
 

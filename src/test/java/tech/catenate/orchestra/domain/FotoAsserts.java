@@ -58,5 +58,9 @@ public class FotoAsserts {
      * @param expected the expected entity
      * @param actual the actual entity
      */
-    public static void assertFotoUpdatableRelationshipsEquals(Foto expected, Foto actual) {}
+    public static void assertFotoUpdatableRelationshipsEquals(Foto expected, Foto actual) {
+        assertThat(expected)
+            .as("Verify Foto relationships")
+            .satisfies(e -> assertThat(e.getConcerto()).as("check concerto").isEqualTo(actual.getConcerto()));
+    }
 }

@@ -127,12 +127,13 @@ public class FotoResource {
     /**
      * {@code GET  /fotos} : get all the fotos.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of fotos in body.
      */
     @GetMapping("")
-    public List<Foto> getAllFotos() {
+    public List<Foto> getAllFotos(@RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload) {
         log.debug("REST request to get all Fotos");
-        return fotoService.findAll();
+        return fotoService.findAllWithToOneRelationships();
     }
 
     /**

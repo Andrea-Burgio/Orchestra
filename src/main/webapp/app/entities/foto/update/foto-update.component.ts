@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ElementRef } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,6 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertError } from 'app/shared/alert/alert-error.model';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
 import { DataUtils, FileLoadError } from 'app/core/util/data-util.service';
+import { IConcerto } from 'app/entities/concerto/concerto.model';
+import { ConcertoService } from 'app/entities/concerto/service/concerto.service';
 import { FotoService } from '../service/foto.service';
 import { IFoto } from '../foto.model';
 import { FotoFormService, FotoFormGroup } from './foto-form.service';
@@ -24,15 +26,20 @@ export class FotoUpdateComponent implements OnInit {
   isSaving = false;
   foto: IFoto | null = null;
 
+  concertosSharedCollection: IConcerto[] = [];
+
   protected dataUtils = inject(DataUtils);
   protected eventManager = inject(EventManager);
   protected fotoService = inject(FotoService);
   protected fotoFormService = inject(FotoFormService);
+  protected concertoService = inject(ConcertoService);
   protected elementRef = inject(ElementRef);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: FotoFormGroup = this.fotoFormService.createFotoFormGroup();
+
+  compareConcerto = (o1: IConcerto | null, o2: IConcerto | null): boolean => this.concertoService.compareConcerto(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ foto }) => {
@@ -40,6 +47,8 @@ export class FotoUpdateComponent implements OnInit {
       if (foto) {
         this.updateForm(foto);
       }
+
+      this.loadRelationshipsOptions();
     });
   }
 
@@ -104,5 +113,20 @@ export class FotoUpdateComponent implements OnInit {
   protected updateForm(foto: IFoto): void {
     this.foto = foto;
     this.fotoFormService.resetForm(this.editForm, foto);
+
+    this.concertosSharedCollection = this.concertoService.addConcertoToCollectionIfMissing<IConcerto>(
+      this.concertosSharedCollection,
+      foto.concerto,
+    );
+  }
+
+  protected loadRelationshipsOptions(): void {
+    this.concertoService
+      .query()
+      .pipe(map((res: HttpResponse<IConcerto[]>) => res.body ?? []))
+      .pipe(
+        map((concertos: IConcerto[]) => this.concertoService.addConcertoToCollectionIfMissing<IConcerto>(concertos, this.foto?.concerto)),
+      )
+      .subscribe((concertos: IConcerto[]) => (this.concertosSharedCollection = concertos));
   }
 }

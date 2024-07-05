@@ -30,6 +30,14 @@
           <dd>
             <span>{{ foto()!.nome_file }}</span>
           </dd>
+          <dt><span>Concerto</span></dt>
+          <dd>
+            @if (foto()!.concerto) {
+              <div>
+                <a [routerLink]="['/concerto', foto()!.concerto?.id, 'view']">{{ foto()!.concerto?.nome }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

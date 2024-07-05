@@ -1,6 +1,7 @@
 package tech.catenate.orchestra.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static tech.catenate.orchestra.domain.ConcertoTestSamples.*;
 import static tech.catenate.orchestra.domain.FotoTestSamples.*;
 
 import org.junit.jupiter.api.Test;
@@ -20,5 +21,17 @@ class FotoTest {
 
         foto2 = getFotoSample2();
         assertThat(foto1).isNotEqualTo(foto2);
+    }
+
+    @Test
+    void concertoTest() {
+        Foto foto = getFotoRandomSampleGenerator();
+        Concerto concertoBack = getConcertoRandomSampleGenerator();
+
+        foto.setConcerto(concertoBack);
+        assertThat(foto.getConcerto()).isEqualTo(concertoBack);
+
+        foto.concerto(null);
+        assertThat(foto.getConcerto()).isNull();
     }
 }

@@ -56,6 +56,12 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="concerto.nome">
+              <div class="d-flex">
+                <span>Concerto</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -74,6 +80,13 @@
                 }
               </td>
               <td>{{ foto.nome_file }}</td>
+              <td>
+                @if (foto.concerto) {
+                  <div>
+                    <a [routerLink]="['/concerto', foto.concerto.id, 'view']">{{ foto.concerto.nome }}</a>
+                  </div>
+                }
+              </td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/foto', foto.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

@@ -23,6 +23,7 @@
     <include file="config/liquibase/changelog/20240704094449_added_entity_constraints_InsegnanteCorso.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240705143855_added_entity_constraints_ClienteCorso.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240703080526_added_entity_constraints_Concerto.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240703082113_added_entity_constraints_Foto.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

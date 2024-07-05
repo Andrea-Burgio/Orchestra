@@ -22,6 +22,7 @@ describe('Foto Form Service', () => {
             id: expect.any(Object),
             blob: expect.any(Object),
             nome_file: expect.any(Object),
+            concerto: expect.any(Object),
           }),
         );
       });
@@ -34,6 +35,7 @@ describe('Foto Form Service', () => {
             id: expect.any(Object),
             blob: expect.any(Object),
             nome_file: expect.any(Object),
+            concerto: expect.any(Object),
           }),
         );
       });

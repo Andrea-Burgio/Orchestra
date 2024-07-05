@@ -18,7 +18,16 @@
   "name": "Foto",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityField": "nome",
+      "otherEntityName": "concerto",
+      "otherEntityRelationshipName": "foto",
+      "relationshipName": "concerto",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceClass"
 }

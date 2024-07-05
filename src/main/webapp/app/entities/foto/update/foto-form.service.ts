@@ -21,6 +21,7 @@ type FotoFormGroupContent = {
   blob: FormControl<IFoto['blob']>;
   blobContentType: FormControl<IFoto['blobContentType']>;
   nome_file: FormControl<IFoto['nome_file']>;
+  concerto: FormControl<IFoto['concerto']>;
 };
 
 export type FotoFormGroup = FormGroup<FotoFormGroupContent>;
@@ -43,6 +44,7 @@ export class FotoFormService {
       blob: new FormControl(fotoRawValue.blob),
       blobContentType: new FormControl(fotoRawValue.blobContentType),
       nome_file: new FormControl(fotoRawValue.nome_file),
+      concerto: new FormControl(fotoRawValue.concerto),
     });
   }
 

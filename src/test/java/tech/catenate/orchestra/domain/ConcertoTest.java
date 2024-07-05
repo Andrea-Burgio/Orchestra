@@ -3,7 +3,10 @@ package tech.catenate.orchestra.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tech.catenate.orchestra.domain.ConcertoTestSamples.*;
 import static tech.catenate.orchestra.domain.CorsoTestSamples.*;
+import static tech.catenate.orchestra.domain.FotoTestSamples.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import tech.catenate.orchestra.web.rest.TestUtil;
 
@@ -33,5 +36,27 @@ class ConcertoTest {
 
         concerto.corso(null);
         assertThat(concerto.getCorso()).isNull();
+    }
+
+    @Test
+    void fotoTest() {
+        Concerto concerto = getConcertoRandomSampleGenerator();
+        Foto fotoBack = getFotoRandomSampleGenerator();
+
+        concerto.addFoto(fotoBack);
+        assertThat(concerto.getFotos()).containsOnly(fotoBack);
+        assertThat(fotoBack.getConcerto()).isEqualTo(concerto);
+
+        concerto.removeFoto(fotoBack);
+        assertThat(concerto.getFotos()).doesNotContain(fotoBack);
+        assertThat(fotoBack.getConcerto()).isNull();
+
+        concerto.fotos(new HashSet<>(Set.of(fotoBack)));
+        assertThat(concerto.getFotos()).containsOnly(fotoBack);
+        assertThat(fotoBack.getConcerto()).isEqualTo(concerto);
+
+        concerto.setFotos(new HashSet<>());
+        assertThat(concerto.getFotos()).doesNotContain(fotoBack);
+        assertThat(fotoBack.getConcerto()).isNull();
     }
 }
